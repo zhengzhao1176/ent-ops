@@ -36,6 +36,7 @@ type InventoryShim = {
   inbound: AnyRouter;
   outbound: AnyRouter;
   transfer: AnyRouter;
+  stocktake: AnyRouter;
   warehouse: AnyRouter;
   location: AnyRouter;
   stock: AnyRouter;

@@ -16,3 +16,4 @@ export { stockLogRepo } from './stockLog.repo';
 export { inboundRepo } from './inbound.repo';
 export { outboundRepo } from './outbound.repo';
 export { transferRepo } from './transfer.repo';
+export { stocktakeRepo } from './stocktake.repo';

@@ -24,6 +24,21 @@ const TRANSITIONS: Record<string, Transition[]> = {
     { from: 10, to: 90, action: 'void' },
     { from: 20, to: 90, action: 'void' },
   ],
+  // Stocktake lifecycle:
+  //   10 = draft      → freeze → 20
+  //   20 = frozen     → submit → 25
+  //   25 = submitted  → commit → 30  (auto-generates gain/loss inbound/outbound)
+  //   30 = committed  → finish → 40
+  //   90 = cancelled  (allowed from 10 / 20 only — once stock has been
+  //                    materially adjusted in commit, cancel is illegal)
+  Stocktake: [
+    { from: 10, to: 20, action: 'freeze' },
+    { from: 20, to: 25, action: 'submit' },
+    { from: 25, to: 30, action: 'commit' },
+    { from: 30, to: 40, action: 'finish' },
+    { from: 10, to: 90, action: 'cancel' },
+    { from: 20, to: 90, action: 'cancel' },
+  ],
 };
 
 export function validateTransition(entity: string, from: number, to: number): void {

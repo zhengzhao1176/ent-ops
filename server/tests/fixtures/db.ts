@@ -18,6 +18,8 @@ export async function resetDb(): Promise<void> {
     p.session.deleteMany(),
     p.loginAttempt.deleteMany(),
     p.auditLog.deleteMany(),
+    p.stocktakeLine.deleteMany(),
+    p.stocktake.deleteMany(),
     p.transferLine.deleteMany(),
     p.transfer.deleteMany(),
     p.outboundLine.deleteMany(),

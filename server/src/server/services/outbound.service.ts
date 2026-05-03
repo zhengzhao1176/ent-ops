@@ -6,6 +6,7 @@ import { outboundRepo } from '../repositories/outbound.repo';
 import { warehouseRepo } from '../repositories/warehouse.repo';
 import { stockRepo } from '../repositories/stock.repo';
 import { stockLogRepo } from '../repositories/stockLog.repo';
+import { stocktakeRepo } from '../repositories/stocktake.repo';
 import { auditService } from './audit.service';
 import { validateTransition } from './stateMachine.service';
 import { genDocNo } from './docNo.service';
@@ -669,6 +670,34 @@ export const outboundService = {
       throw new TRPCError({ code: 'NOT_FOUND', message: 'OUTBOUND_NOT_FOUND' });
     }
     tryTransition(head.status, STATUS_AUDITED);
+
+    // ====================================================================
+    // STOCKTAKE_FROZEN guard (cross-cutting, F-IM-06).
+    //   If any line falls under an active stocktake freeze (status=20)
+    //   for this warehouse + goods, block audit (which would lock stock)
+    //   with PRECONDITION_FAILED.
+    //
+    //   EXCEPTION: kind === 'STOCKTAKE'.  The stocktake.commit step (25→30)
+    //   itself invokes outbound.audit / ship on the auto-generated 盘亏 loss
+    //   doc; if we blocked it, commit could never close the loop and lift
+    //   the freeze.  Internal stocktake-kind docs are therefore exempt.
+    // ====================================================================
+    if (head.kind !== 'STOCKTAKE') {
+      for (const line of head.lines) {
+        const active = await stocktakeRepo.countActiveByWarehouseAndGoods(
+          ctx.prisma,
+          head.warehouseId,
+          line.goodsId,
+        );
+        if (active > 0) {
+          throw new TRPCError({
+            code: 'PRECONDITION_FAILED',
+            message: 'STOCKTAKE_FROZEN',
+          });
+        }
+      }
+    }
+
     const operatorId = ctx.user?.id ?? head.operatorId;
     const strategy = (head.pickStrategy ?? 'FIFO') as
       | 'FIFO'
