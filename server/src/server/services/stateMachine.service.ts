@@ -1,0 +1,34 @@
+type Transition = { from: number; to: number; action: string };
+
+const TRANSITIONS: Record<string, Transition[]> = {
+  Inbound: [
+    { from: 10, to: 20, action: 'submit' },
+    { from: 20, to: 30, action: 'audit' },
+    { from: 30, to: 40, action: 'finish' },
+    { from: 10, to: 90, action: 'void' },
+    { from: 20, to: 90, action: 'void' },
+  ],
+  Outbound: [
+    { from: 10, to: 20, action: 'submit' },
+    { from: 20, to: 25, action: 'audit' },
+    { from: 25, to: 30, action: 'ship' },
+    { from: 30, to: 40, action: 'finish' },
+    { from: 10, to: 90, action: 'void' },
+    { from: 20, to: 90, action: 'void' },
+  ],
+};
+
+export function validateTransition(entity: string, from: number, to: number): void {
+  const list = TRANSITIONS[entity];
+  if (!list) throw new Error(`UNKNOWN_ENTITY:${entity}`);
+  if (!list.some((t) => t.from === from && t.to === to)) {
+    throw new Error(`ILLEGAL_TRANSITION:${entity}:${from}->${to}`);
+  }
+}
+
+export function findAction(entity: string, from: number, to: number): string {
+  const list = TRANSITIONS[entity] ?? [];
+  const t = list.find((x) => x.from === from && x.to === to);
+  if (!t) throw new Error(`ILLEGAL_TRANSITION:${entity}:${from}->${to}`);
+  return t.action;
+}

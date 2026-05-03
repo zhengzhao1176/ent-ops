@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "departments" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "parent_id" BIGINT,
@@ -20,7 +20,7 @@ CREATE TABLE "departments" (
 
 -- CreateTable
 CREATE TABLE "roles" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
@@ -35,7 +35,7 @@ CREATE TABLE "roles" (
 
 -- CreateTable
 CREATE TABLE "permissions" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "kind" TEXT NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE "permissions" (
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "employee_no" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "real_name" TEXT NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE "role_permissions" (
 
 -- CreateTable
 CREATE TABLE "password_histories" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
     "password_hash" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -105,7 +105,7 @@ CREATE TABLE "password_histories" (
 
 -- CreateTable
 CREATE TABLE "login_attempts" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "login_id" TEXT NOT NULL,
     "ip" TEXT NOT NULL,
     "success" BOOLEAN NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE "sessions" (
 
 -- CreateTable
 CREATE TABLE "audit_logs" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "operator_id" BIGINT,
     "operator_name" TEXT,
     "ip" TEXT,
@@ -146,7 +146,7 @@ CREATE TABLE "audit_logs" (
 
 -- CreateTable
 CREATE TABLE "categories" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "parent_id" BIGINT,
@@ -163,7 +163,7 @@ CREATE TABLE "categories" (
 
 -- CreateTable
 CREATE TABLE "units" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "base_unit_id" BIGINT,
@@ -173,7 +173,7 @@ CREATE TABLE "units" (
 
 -- CreateTable
 CREATE TABLE "goods" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "category_id" BIGINT NOT NULL,
@@ -197,7 +197,7 @@ CREATE TABLE "goods" (
 
 -- CreateTable
 CREATE TABLE "warehouses" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "kind" TEXT NOT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE "warehouses" (
 
 -- CreateTable
 CREATE TABLE "locations" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "warehouse_id" BIGINT NOT NULL,
     "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -227,7 +227,7 @@ CREATE TABLE "locations" (
 
 -- CreateTable
 CREATE TABLE "stocks" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "warehouse_id" BIGINT NOT NULL,
     "location_id" BIGINT NOT NULL,
     "goods_id" BIGINT NOT NULL,
@@ -246,7 +246,7 @@ CREATE TABLE "stocks" (
 
 -- CreateTable
 CREATE TABLE "stock_logs" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "stock_id" BIGINT NOT NULL,
     "warehouse_id" BIGINT NOT NULL,
     "goods_id" BIGINT NOT NULL,
@@ -263,7 +263,7 @@ CREATE TABLE "stock_logs" (
 
 -- CreateTable
 CREATE TABLE "inbounds" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "doc_no" TEXT NOT NULL,
     "kind" TEXT NOT NULL,
     "source_doc_no" TEXT,
@@ -282,7 +282,7 @@ CREATE TABLE "inbounds" (
 
 -- CreateTable
 CREATE TABLE "inbound_lines" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "inbound_id" BIGINT NOT NULL,
     "goods_id" BIGINT NOT NULL,
     "location_id" BIGINT NOT NULL,
@@ -296,7 +296,7 @@ CREATE TABLE "inbound_lines" (
 
 -- CreateTable
 CREATE TABLE "outbounds" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "doc_no" TEXT NOT NULL,
     "kind" TEXT NOT NULL,
     "target_doc_no" TEXT,
@@ -315,7 +315,7 @@ CREATE TABLE "outbounds" (
 
 -- CreateTable
 CREATE TABLE "outbound_lines" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "id" BIGINT NOT NULL PRIMARY KEY,
     "outbound_id" BIGINT NOT NULL,
     "goods_id" BIGINT NOT NULL,
     "location_id" BIGINT NOT NULL,

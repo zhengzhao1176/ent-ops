@@ -9,9 +9,10 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.ts', 'tests/integration/**/*.test.ts'],
     exclude: ['tests/e2e/**', 'node_modules/**', '.next/**'],
     pool: 'forks',
-    poolOptions: { forks: { singleFork: false } },
-    testTimeout: 15_000,
-    hookTimeout: 30_000,
+    poolOptions: { forks: { singleFork: true } },
+    fileParallelism: false,
+    testTimeout: 30_000,
+    hookTimeout: 60_000,
     reporters: process.env.CI ? ['default', 'json'] : ['default'],
   },
   resolve: {

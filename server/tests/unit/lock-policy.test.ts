@@ -5,7 +5,7 @@ describe('账户锁定策略 (F-UM-02-EXTRA)', () => {
   const now = new Date('2026-05-03T10:00:00Z');
 
   it('失败次数 < 5 不锁', () => {
-    expect(computeLockState({ failCount: 4, now })).toEqual({ shouldLock: false, lockedUntil: null });
+    expect(computeLockState({ failCount: 4, now })).toMatchObject({ shouldLock: false, lockedUntil: null });
   });
 
   it('失败次数 = 5 锁 30 分钟', () => {

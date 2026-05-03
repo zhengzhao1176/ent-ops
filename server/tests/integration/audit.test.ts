@@ -34,9 +34,13 @@ describe('audit.* (F-UM-10)', () => {
       status: 'ACTIVE', roleCodes: ['ROLE_SUPER_ADMIN'],
     });
     const c = await callerForUserId(user.id);
-    const procs = c.audit as unknown as Record<string, unknown>;
-    expect(procs.update).toBeUndefined();
-    expect(procs.delete).toBeUndefined();
+    // tRPC client 是 Proxy，需用调用语义验证 procedure 不存在
+    const callUpdate = (c.audit as unknown as Record<string, (...args: unknown[]) => Promise<unknown>>)
+      .update?.({ id: 1n });
+    await expect(callUpdate).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    const callDelete = (c.audit as unknown as Record<string, (...args: unknown[]) => Promise<unknown>>)
+      .delete?.({ id: 1n });
+    await expect(callDelete).rejects.toMatchObject({ code: 'NOT_FOUND' });
   });
 
   it('权限不足应 FORBIDDEN', async () => {
