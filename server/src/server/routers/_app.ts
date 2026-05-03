@@ -13,6 +13,7 @@ import { locationRouter } from './location.router';
 import { stockRouter } from './stock.router';
 import { stockLogRouter } from './stockLog.router';
 import { inboundRouter } from './inbound.router';
+import { outboundRouter } from './outbound.router';
 
 export const appRouter = router({
   auth: authRouter,
@@ -29,6 +30,7 @@ export const appRouter = router({
   stock: stockRouter,
   stockLog: stockLogRouter,
   inbound: inboundRouter,
+  outbound: outboundRouter,
 });
 
 export type AppRouter = typeof appRouter;

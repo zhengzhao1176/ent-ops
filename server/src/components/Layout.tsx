@@ -13,6 +13,7 @@ const NAV = [
   { href: '/inv/goods', label: '商品管理' },
   { href: '/inv/stock', label: '库存查询' },
   { href: '/inv/inbound', label: '入库管理' },
+  { href: '/inv/outbound', label: '出库管理' },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
