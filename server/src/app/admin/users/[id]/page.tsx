@@ -8,7 +8,10 @@ import { trpc } from '@lib/trpc';
 export default function EditUserPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const id = BigInt(params.id);
+  // Keep id as a string: react-query hashes the queryKey via JSON.stringify,
+  // which throws on bigint. The BigIntId zod schema accepts string and
+  // transforms to bigint server-side.
+  const id = params.id;
   const detail = trpc.user.detail.useQuery({ id });
   const update = trpc.user.update.useMutation();
   const [form, setForm] = useState({ realName: '', mobile: '', email: '', nickname: '' });

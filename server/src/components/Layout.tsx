@@ -10,6 +10,9 @@ const NAV = [
   { href: '/admin/roles', label: '角色管理' },
   { href: '/admin/depts', label: '部门管理' },
   { href: '/admin/audit', label: '审计日志' },
+  { href: '/inv/goods', label: '商品管理' },
+  { href: '/inv/stock', label: '库存查询' },
+  { href: '/inv/inbound', label: '入库管理' },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {

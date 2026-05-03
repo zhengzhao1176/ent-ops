@@ -87,6 +87,28 @@ async function main() {
     create: { userId: sysAdmin.id, roleId: sar.id },
   });
 
+  // Inventory prerequisites for e2e: 1 Category / 1 Unit / 1 Warehouse / 1 Location
+  await prisma.category.upsert({
+    where: { code: 'CAT-DEFAULT' },
+    update: {},
+    create: { code: 'CAT-DEFAULT', name: '默认分类', path: '/CAT-DEFAULT', depth: 0, sort: 0 },
+  });
+  await prisma.unit.upsert({
+    where: { code: 'UNIT-PCS' },
+    update: {},
+    create: { code: 'UNIT-PCS', name: '件' },
+  });
+  const wh = await prisma.warehouse.upsert({
+    where: { code: 'WH-MAIN' },
+    update: {},
+    create: { code: 'WH-MAIN', name: '主仓库', kind: 'NORMAL', address: '总部一楼' },
+  });
+  await prisma.location.upsert({
+    where: { warehouseId_code: { warehouseId: wh.id, code: 'LOC-A1' } },
+    update: {},
+    create: { warehouseId: wh.id, code: 'LOC-A1', name: 'A区-01货位' },
+  });
+
   console.log('Seed OK. Login: admin / Aa123456');
 }
 
