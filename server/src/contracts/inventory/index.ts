@@ -1,0 +1,9 @@
+export * as category from './category.contract';
+export * as unit from './unit.contract';
+export * as goods from './goods.contract';
+export * as warehouse from './warehouse.contract';
+export * as location from './location.contract';
+export * as stock from './stock.contract';
+export * as stockLog from './stockLog.contract';
+export * as inbound from './inbound.contract';
+export * as outbound from './outbound.contract';
