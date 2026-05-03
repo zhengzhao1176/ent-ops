@@ -1,0 +1,442 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// User module
+// ============================================================
+
+model Department {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @unique
+  name      String
+  parentId  BigInt?   @map("parent_id")
+  path      String
+  depth     Int
+  sort      Int       @default(0)
+  status    String    @default("ACTIVE")
+  remark    String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy BigInt?   @map("created_by")
+  updatedBy BigInt?   @map("updated_by")
+  version   Int       @default(0)
+
+  parent   Department?  @relation("DeptParent", fields: [parentId], references: [id])
+  children Department[] @relation("DeptParent")
+  users    User[]
+
+  @@index([parentId])
+  @@index([deletedAt])
+  @@index([status])
+  @@map("departments")
+}
+
+model Role {
+  id          BigInt    @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  description String?
+  isBuiltin   Boolean   @default(false) @map("is_builtin")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  createdBy   BigInt?   @map("created_by")
+  updatedBy   BigInt?   @map("updated_by")
+  version     Int       @default(0)
+
+  permissions RolePermission[]
+  users       UserRole[]
+
+  @@index([deletedAt])
+  @@map("roles")
+}
+
+model Permission {
+  id        BigInt   @id @default(autoincrement())
+  code      String   @unique
+  name      String
+  kind      String
+  parentId  BigInt?  @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  roles RolePermission[]
+
+  @@index([parentId])
+  @@index([kind])
+  @@map("permissions")
+}
+
+model User {
+  id                 BigInt    @id @default(autoincrement())
+  employeeNo         String    @unique @map("employee_no")
+  username           String    @unique
+  realName           String    @map("real_name")
+  mobile             String    @unique
+  email              String    @unique
+  passwordHash       String    @map("password_hash")
+  deptId             BigInt    @map("dept_id")
+  status             String    @default("PENDING")
+  loginFailCount     Int       @default(0) @map("login_fail_count")
+  lockedUntil        DateTime? @map("locked_until")
+  lastLoginAt        DateTime? @map("last_login_at")
+  lastLoginIp        String?   @map("last_login_ip")
+  passwordUpdatedAt  DateTime? @map("password_updated_at")
+  mustChangePassword Boolean   @default(true) @map("must_change_password")
+  avatar             String?
+  nickname           String?
+  remark             String?
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+  createdBy          BigInt?   @map("created_by")
+  updatedBy          BigInt?   @map("updated_by")
+  version            Int       @default(0)
+
+  department        Department        @relation(fields: [deptId], references: [id])
+  roles             UserRole[]
+  passwordHistories PasswordHistory[]
+  sessions          Session[]
+
+  @@index([deptId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model UserRole {
+  userId    BigInt   @map("user_id")
+  roleId    BigInt   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  createdBy BigInt?  @map("created_by")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       BigInt @map("role_id")
+  permissionId BigInt @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model PasswordHistory {
+  id           BigInt   @id @default(autoincrement())
+  userId       BigInt   @map("user_id")
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("password_histories")
+}
+
+model LoginAttempt {
+  id        BigInt   @id @default(autoincrement())
+  loginId   String   @map("login_id")
+  ip        String
+  success   Boolean
+  userId    BigInt?  @map("user_id")
+  reason    String?
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([loginId, createdAt])
+  @@index([ip, createdAt])
+  @@index([userId])
+  @@map("login_attempts")
+}
+
+model Session {
+  id        String    @id
+  userId    BigInt    @map("user_id")
+  tokenHash String    @map("token_hash")
+  ip        String?
+  userAgent String?   @map("user_agent")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model AuditLog {
+  id           BigInt   @id @default(autoincrement())
+  operatorId   BigInt?  @map("operator_id")
+  operatorName String?  @map("operator_name")
+  ip           String?
+  actionType   String   @map("action_type")
+  entity       String
+  entityId     String?  @map("entity_id")
+  before       String?
+  after        String?
+  result       String   @default("SUCCESS")
+  message      String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([operatorId, createdAt])
+  @@index([entity, createdAt])
+  @@index([actionType, createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================================
+// Inventory module
+// ============================================================
+
+model Category {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @unique
+  name      String
+  parentId  BigInt?   @map("parent_id")
+  path      String
+  depth     Int
+  sort      Int       @default(0)
+  status    String    @default("ACTIVE")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  version   Int       @default(0)
+
+  parent   Category?  @relation("CatParent", fields: [parentId], references: [id])
+  children Category[] @relation("CatParent")
+  goods    Goods[]
+
+  @@index([parentId])
+  @@index([deletedAt])
+  @@map("categories")
+}
+
+model Unit {
+  id         BigInt  @id @default(autoincrement())
+  code       String  @unique
+  name       String
+  baseUnitId BigInt? @map("base_unit_id")
+  ratio      String?
+  status     String  @default("ACTIVE")
+
+  goods Goods[]
+
+  @@map("units")
+}
+
+model Goods {
+  id            BigInt    @id @default(autoincrement())
+  code          String    @unique
+  name          String
+  categoryId    BigInt    @map("category_id")
+  unitId        BigInt    @map("unit_id")
+  spec          String?
+  brand         String?
+  barcode       String?
+  safetyStock   String?   @map("safety_stock")
+  stockUpper    String?   @map("stock_upper")
+  shelfLifeDays Int?      @map("shelf_life_days")
+  image         String?
+  status        String    @default("ACTIVE")
+  remark        String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  version       Int       @default(0)
+
+  category      Category       @relation(fields: [categoryId], references: [id])
+  unit          Unit           @relation(fields: [unitId], references: [id])
+  stocks        Stock[]
+  stockLogs     StockLog[]
+  inboundLines  InboundLine[]
+  outboundLines OutboundLine[]
+
+  @@index([categoryId])
+  @@index([deletedAt])
+  @@index([status])
+  @@map("goods")
+}
+
+model Warehouse {
+  id        BigInt    @id @default(autoincrement())
+  code      String    @unique
+  name      String
+  kind      String
+  address   String?
+  managerId BigInt?   @map("manager_id")
+  status    String    @default("ACTIVE")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  version   Int       @default(0)
+
+  locations Location[]
+  stocks    Stock[]
+  inbounds  Inbound[]
+  outbounds Outbound[]
+
+  @@index([deletedAt])
+  @@map("warehouses")
+}
+
+model Location {
+  id          BigInt    @id @default(autoincrement())
+  warehouseId BigInt    @map("warehouse_id")
+  code        String
+  name        String
+  capacity    String?
+  status      String    @default("ACTIVE")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  version     Int       @default(0)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  stocks    Stock[]
+
+  @@unique([warehouseId, code])
+  @@index([deletedAt])
+  @@map("locations")
+}
+
+model Stock {
+  id           BigInt    @id @default(autoincrement())
+  warehouseId  BigInt    @map("warehouse_id")
+  locationId   BigInt    @map("location_id")
+  goodsId      BigInt    @map("goods_id")
+  batchNo      String    @default("") @map("batch_no")
+  qtyOnHand    String    @default("0") @map("qty_on_hand")
+  qtyLocked    String    @default("0") @map("qty_locked")
+  qtyAvailable String    @default("0") @map("qty_available")
+  qtyInTransit String    @default("0") @map("qty_in_transit")
+  expireAt     DateTime? @map("expire_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  version      Int       @default(0)
+
+  warehouse Warehouse  @relation(fields: [warehouseId], references: [id])
+  location  Location   @relation(fields: [locationId], references: [id])
+  goods     Goods      @relation(fields: [goodsId], references: [id])
+  logs      StockLog[]
+
+  @@unique([warehouseId, locationId, goodsId, batchNo])
+  @@index([goodsId])
+  @@map("stocks")
+}
+
+model StockLog {
+  id          BigInt   @id @default(autoincrement())
+  stockId     BigInt   @map("stock_id")
+  warehouseId BigInt   @map("warehouse_id")
+  goodsId     BigInt   @map("goods_id")
+  changeType  String   @map("change_type")
+  qtyBefore   String   @map("qty_before")
+  qtyChange   String   @map("qty_change")
+  qtyAfter    String   @map("qty_after")
+  refDocNo    String?  @map("ref_doc_no")
+  operatorId  BigInt?  @map("operator_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  stock Stock @relation(fields: [stockId], references: [id])
+  goods Goods @relation(fields: [goodsId], references: [id])
+
+  @@index([stockId, createdAt])
+  @@index([goodsId, createdAt])
+  @@map("stock_logs")
+}
+
+model Inbound {
+  id              BigInt    @id @default(autoincrement())
+  docNo           String    @unique @map("doc_no")
+  kind            String
+  sourceDocNo     String?   @map("source_doc_no")
+  warehouseId     BigInt    @map("warehouse_id")
+  operatorId      BigInt    @map("operator_id")
+  operationAt     DateTime  @map("operation_at")
+  remark          String?
+  status          Int       @default(10)
+  statusUpdatedAt DateTime? @map("status_updated_at")
+  statusUpdatedBy BigInt?   @map("status_updated_by")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  version         Int       @default(0)
+
+  warehouse Warehouse     @relation(fields: [warehouseId], references: [id])
+  lines     InboundLine[]
+
+  @@index([warehouseId, status])
+  @@index([status])
+  @@map("inbounds")
+}
+
+model InboundLine {
+  id         BigInt    @id @default(autoincrement())
+  inboundId  BigInt    @map("inbound_id")
+  goodsId    BigInt    @map("goods_id")
+  locationId BigInt    @map("location_id")
+  batchNo    String    @default("") @map("batch_no")
+  qty        String
+  unitPrice  String?   @map("unit_price")
+  expireAt   DateTime? @map("expire_at")
+
+  inbound Inbound @relation(fields: [inboundId], references: [id], onDelete: Cascade)
+  goods   Goods   @relation(fields: [goodsId], references: [id])
+
+  @@index([inboundId])
+  @@map("inbound_lines")
+}
+
+model Outbound {
+  id           BigInt   @id @default(autoincrement())
+  docNo        String   @unique @map("doc_no")
+  kind         String
+  targetDocNo  String?  @map("target_doc_no")
+  warehouseId  BigInt   @map("warehouse_id")
+  applicantId  BigInt?  @map("applicant_id")
+  operatorId   BigInt   @map("operator_id")
+  operationAt  DateTime @map("operation_at")
+  pickStrategy String   @default("FIFO") @map("pick_strategy")
+  remark       String?
+  status       Int      @default(10)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  version      Int      @default(0)
+
+  warehouse Warehouse      @relation(fields: [warehouseId], references: [id])
+  lines     OutboundLine[]
+
+  @@index([warehouseId, status])
+  @@index([status])
+  @@map("outbounds")
+}
+
+model OutboundLine {
+  id         BigInt @id @default(autoincrement())
+  outboundId BigInt @map("outbound_id")
+  goodsId    BigInt @map("goods_id")
+  locationId BigInt @map("location_id")
+  batchNo    String @default("") @map("batch_no")
+  qty        String
+
+  outbound Outbound @relation(fields: [outboundId], references: [id], onDelete: Cascade)
+  goods    Goods    @relation(fields: [goodsId], references: [id])
+
+  @@index([outboundId])
+  @@map("outbound_lines")
+}
