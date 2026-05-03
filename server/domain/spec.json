@@ -1,0 +1,256 @@
+{
+  "F-UM-01-EXTRA": {
+    "feature": "用户注册的额外业务规则",
+    "patternBase": [{ "entity": "User", "pattern": "P-CRUD-FULL", "op": "create" }],
+    "extraCases": [
+      {
+        "id": "C-UM-01-001",
+        "name": "管理员代建账号生成 12 位初始密码且 mustChangePassword=true",
+        "given": "以系统管理员身份调用 user.create",
+        "when": "提交合法字段",
+        "then": "返回的 user.mustChangePassword=true，且 PasswordHistory 记录初始密码哈希一条",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-01-002",
+        "name": "工号重复应报 CONFLICT",
+        "given": "已存在工号 E001 的用户",
+        "when": "再次以工号 E001 创建用户",
+        "then": "抛 TRPCError code=CONFLICT，message 包含 'employeeNo'",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-01-003",
+        "name": "手机号格式非法应报 BAD_REQUEST",
+        "given": "无前置数据",
+        "when": "用 mobile=12345678901 创建用户",
+        "then": "抛 BAD_REQUEST，issues 包含 path='mobile'",
+        "kind": "integration"
+      }
+    ]
+  },
+  "F-UM-02-EXTRA": {
+    "feature": "登录与锁定策略",
+    "patternBase": [{ "entity": "User", "pattern": "P-AUTH", "op": "login" }],
+    "extraCases": [
+      {
+        "id": "C-UM-02-001",
+        "name": "连续 5 次密码错误后账号被锁定 30 分钟",
+        "given": "已存在 ACTIVE 状态用户",
+        "when": "用错误密码连续登录 5 次",
+        "then": "第 5 次返回 LOCKED，user.status=LOCKED，user.lockedUntil = now+30min",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-02-002",
+        "name": "锁定期间登录直接拒绝",
+        "given": "用户已被锁定且 lockedUntil > now",
+        "when": "提交正确密码登录",
+        "then": "抛 FORBIDDEN code=LOCKED",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-02-003",
+        "name": "锁定到期后可正常登录且 lockedUntil 清空",
+        "given": "用户被锁定但 lockedUntil < now",
+        "when": "提交正确密码登录",
+        "then": "登录成功；user.status=ACTIVE；loginFailCount=0",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-02-004",
+        "name": "登录失败必落 LoginAttempt 且 success=false",
+        "given": "无",
+        "when": "用错误密码登录",
+        "then": "LoginAttempt 表新增 1 条 success=false 且 reason='BAD_PASSWORD'",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-02-005",
+        "name": "支持 username/mobile/email 三种登录标识",
+        "given": "用户 mobile=13800000001 / email=u@a.com / username=u1",
+        "when": "三种 loginId 各登录一次",
+        "then": "三次都返回 token 且 LoginAttempt 三条 success=true",
+        "kind": "integration"
+      }
+    ]
+  },
+  "F-UM-04-EXTRA": {
+    "feature": "密码策略与改密",
+    "patternBase": [{ "entity": "User", "pattern": "P-AUTH", "op": "changePassword" }],
+    "extraCases": [
+      {
+        "id": "C-UM-04-001",
+        "name": "密码长度<8 拒绝",
+        "given": "已登录用户",
+        "when": "newPassword='Aa1234'",
+        "then": "抛 BAD_REQUEST，message 包含 '长度'",
+        "kind": "unit"
+      },
+      {
+        "id": "C-UM-04-002",
+        "name": "密码必须含大小写+数字",
+        "given": "已登录用户",
+        "when": "newPassword='aaaaaaaa'",
+        "then": "抛 BAD_REQUEST，message 包含 '复杂度'",
+        "kind": "unit"
+      },
+      {
+        "id": "C-UM-04-003",
+        "name": "新密码不可与最近 3 次相同",
+        "given": "用户已有 3 条 PasswordHistory，包含 hash(P3)",
+        "when": "newPassword=P3",
+        "then": "抛 BAD_REQUEST，message 包含 '最近 3 次'",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-04-004",
+        "name": "首次登录强制改密：未改密前任何受保护接口都返回 PRECONDITION_FAILED code=MUST_CHANGE_PASSWORD",
+        "given": "用户 mustChangePassword=true 已登录",
+        "when": "调用 user.list",
+        "then": "抛 PRECONDITION_FAILED code=MUST_CHANGE_PASSWORD",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-04-005",
+        "name": "改密成功后 mustChangePassword=false 且 passwordUpdatedAt 更新",
+        "given": "mustChangePassword=true 用户",
+        "when": "成功 changePassword",
+        "then": "user.mustChangePassword=false；passwordUpdatedAt=now",
+        "kind": "integration"
+      }
+    ]
+  },
+  "F-UM-07-EXTRA": {
+    "feature": "用户状态管理",
+    "patternBase": [{ "entity": "User", "pattern": "P-CRUD-FULL", "op": "update" }],
+    "extraCases": [
+      {
+        "id": "C-UM-07-001",
+        "name": "超级管理员账号不可被禁用",
+        "given": "目标为超管账号",
+        "when": "调用 user.deactivate(superAdminId)",
+        "then": "抛 FORBIDDEN code=SUPER_ADMIN_PROTECTED",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-07-002",
+        "name": "至少保留 1 个超管",
+        "given": "系统中只剩 1 个超管",
+        "when": "试图把该超管改成普通角色",
+        "then": "抛 FORBIDDEN code=AT_LEAST_ONE_SUPER_ADMIN",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-07-003",
+        "name": "禁用用户后该用户登录被拒",
+        "given": "用户已 DISABLED",
+        "when": "正确密码登录",
+        "then": "抛 FORBIDDEN code=DISABLED",
+        "kind": "integration"
+      }
+    ]
+  },
+  "F-UM-10-EXTRA": {
+    "feature": "审计日志",
+    "patternBase": [{ "entity": "AuditLog", "pattern": "P-CRUD-IMMUTABLE" }],
+    "extraCases": [
+      {
+        "id": "C-UM-10-001",
+        "name": "用户删除操作必落审计日志",
+        "given": "已存在 user X",
+        "when": "调用 user.delete(X.id)",
+        "then": "AuditLog 新增 1 条 entity=User actionType=DELETE result=SUCCESS before/after JSON 非空",
+        "kind": "integration"
+      },
+      {
+        "id": "C-UM-10-002",
+        "name": "审计日志不可更新不可删除",
+        "given": "AuditLog 已有 N 条",
+        "when": "尝试任意 update/delete",
+        "then": "router 不暴露这些 procedure；DB 层即便绕过也应被业务防护拦",
+        "kind": "integration"
+      }
+    ]
+  },
+  "PASSWORD-STRENGTH-UNIT": {
+    "feature": "密码强度纯函数",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-PWD-001", "name": "长度<8 失败", "given": "无", "when": "checkStrength('Aa1234')", "then": "返回 { ok:false, reason:'LENGTH' }", "kind": "unit" },
+      { "id": "C-PWD-002", "name": "缺大写失败", "given": "无", "when": "checkStrength('aa123456')", "then": "返回 { ok:false, reason:'COMPLEXITY' }", "kind": "unit" },
+      { "id": "C-PWD-003", "name": "缺小写失败", "given": "无", "when": "checkStrength('AA123456')", "then": "返回 { ok:false, reason:'COMPLEXITY' }", "kind": "unit" },
+      { "id": "C-PWD-004", "name": "缺数字失败", "given": "无", "when": "checkStrength('AaBbCcDd')", "then": "返回 { ok:false, reason:'COMPLEXITY' }", "kind": "unit" },
+      { "id": "C-PWD-005", "name": "合法密码通过", "given": "无", "when": "checkStrength('Aa123456')", "then": "返回 { ok:true }", "kind": "unit" }
+    ]
+  },
+  "RATE-LIMIT-UNIT": {
+    "feature": "登录限频纯函数",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-RL-001", "name": "1 分钟内同 IP 第 10 次触发限频", "given": "同 IP 已记录 9 次", "when": "shouldRateLimit(ip, now)", "then": "返回 false；第 10 次返回 true", "kind": "unit" },
+      { "id": "C-RL-002", "name": "1 分钟外的请求不计入", "given": "61 秒前有 100 次", "when": "now 提交", "then": "返回 false", "kind": "unit" }
+    ]
+  },
+  "STOCK-MATH-UNIT": {
+    "feature": "库存数学纯函数",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-STM-001", "name": "可用 = 在库 - 锁定 - 在途出库", "given": "在库=100 锁定=20 在途出=10", "when": "computeAvailable(100,20,10)", "then": "返回 70", "kind": "unit" },
+      { "id": "C-STM-002", "name": "任何变更不允许结果<0", "given": "在库=10", "when": "applyDelta(10, -20)", "then": "抛 NEGATIVE_STOCK", "kind": "unit" },
+      { "id": "C-STM-003", "name": "FIFO 按 batch.createdAt 升序", "given": "三批：A(t1) B(t2) C(t3)", "when": "pickBatches('FIFO', 50, 各批 30)", "then": "返回 [A:30, B:20]", "kind": "unit" },
+      { "id": "C-STM-004", "name": "FEFO 按 batch.expireAt 升序", "given": "三批：A(exp+30) B(exp+10) C(exp+20)", "when": "pickBatches('FEFO', 40, 各批 30)", "then": "返回 [B:30, C:10]", "kind": "unit" }
+    ]
+  },
+  "STATE-MACHINE-UNIT": {
+    "feature": "通用状态机校验",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-SM-001", "name": "Inbound 草稿(10)→已审核(30) 不允许跳级", "given": "状态=10", "when": "validateTransition('Inbound',10,30)", "then": "抛 ILLEGAL_TRANSITION", "kind": "unit" },
+      { "id": "C-SM-002", "name": "已完成(40) 禁止任何 transition", "given": "状态=40", "when": "validateTransition('Inbound',40,*)", "then": "抛 ILLEGAL_TRANSITION", "kind": "unit" }
+    ]
+  },
+  "DOC-NO-UNIT": {
+    "feature": "单据号生成器",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-DOC-001", "name": "RK + YYYYMMDD + 4 位流水", "given": "today=2026-05-03", "when": "genDocNo('RK',1)", "then": "返回 'RK202605030001'", "kind": "unit" },
+      { "id": "C-DOC-002", "name": "流水补 0", "given": "today=2026-05-03", "when": "genDocNo('CK',42)", "then": "返回 'CK202605030042'", "kind": "unit" }
+    ]
+  },
+  "MOBILE-UNIT": {
+    "feature": "手机号校验",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-MOB-001", "name": "13800001234 合法", "given": "无", "when": "validate('13800001234')", "then": "true", "kind": "unit" },
+      { "id": "C-MOB-002", "name": "12345678901 非法（首位非1或第二位非3-9）", "given": "无", "when": "validate('12345678901')", "then": "false", "kind": "unit" },
+      { "id": "C-MOB-003", "name": "138000012345 长度 12 非法", "given": "无", "when": "validate('138000012345')", "then": "false", "kind": "unit" }
+    ]
+  },
+  "F-IM-03-EXTRA": {
+    "feature": "入库业务规则",
+    "patternBase": [{ "entity": "Inbound", "pattern": "P-STATE-MACHINE" }],
+    "extraCases": [
+      { "id": "C-IM-03-001", "name": "审核成功后库存数量必须增加且生成流水", "given": "草稿单 100 个 SKU-A", "when": "audit", "then": "Stock.qtyOnHand 增 100；StockLog 新增 1 条 changeType=INBOUND qty_change=100", "kind": "integration" },
+      { "id": "C-IM-03-002", "name": "已审核单据不可修改", "given": "状态=30", "when": "update", "then": "抛 BAD_REQUEST code=IMMUTABLE_AFTER_AUDIT", "kind": "integration" },
+      { "id": "C-IM-03-003", "name": "作废生成红冲流水（负数）", "given": "已审核单 +100", "when": "void", "then": "Stock 回退 100；StockLog 追加 1 条 qty_change=-100", "kind": "integration" }
+    ]
+  },
+  "F-IM-04-EXTRA": {
+    "feature": "出库业务规则",
+    "patternBase": [{ "entity": "Outbound", "pattern": "P-STATE-MACHINE" }],
+    "extraCases": [
+      { "id": "C-IM-04-001", "name": "可用库存不足提交即拒", "given": "Stock 在库=10 锁定=0", "when": "submit qty=20", "then": "抛 PRECONDITION_FAILED code=INSUFFICIENT_STOCK", "kind": "integration" },
+      { "id": "C-IM-04-002", "name": "提交成功立即锁定库存", "given": "在库=100 锁定=0", "when": "submit qty=30", "then": "Stock.qtyLocked=30；qtyAvailable=70", "kind": "integration" },
+      { "id": "C-IM-04-003", "name": "审核（出库）扣减在库与锁定，落流水", "given": "已锁定 30", "when": "ship", "then": "Stock.qtyOnHand-=30；qtyLocked-=30；StockLog +1 条 qty_change=-30", "kind": "integration" },
+      { "id": "C-IM-04-004", "name": "FIFO 出库按入库时间", "given": "三批 A 早 B 中 C 晚 各 30", "when": "submit + audit + ship qty=50", "then": "A 减 30 B 减 20", "kind": "integration" }
+    ]
+  },
+  "BR-IM-10": {
+    "feature": "禁止负库存（兜底）",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-BR-IM-10-001", "name": "任何 service 路径都不允许将 Stock.qtyOnHand 改成负数", "given": "Stock=5", "when": "stock.applyDelta(-10)", "then": "抛 PRECONDITION_FAILED 且 DB 行不变", "kind": "integration" }
+    ]
+  }
+}

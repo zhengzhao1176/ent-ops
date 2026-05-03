@@ -1,0 +1,176 @@
+{
+  "_project": {
+    "patterns": ["P-AUTH", "P-RBAC", "P-AUDIT", "P-CRON"],
+    "extras": [
+      { "name": "register",       "kind": "mutation", "specRef": "F-UM-01" },
+      { "name": "login",          "kind": "mutation", "specRef": "F-UM-02" },
+      { "name": "logout",         "kind": "mutation", "specRef": "F-UM-02" },
+      { "name": "refresh",        "kind": "mutation", "specRef": "F-UM-02" },
+      { "name": "changePassword", "kind": "mutation", "specRef": "F-UM-04" },
+      { "name": "forgotPassword", "kind": "mutation", "specRef": "F-UM-04" },
+      { "name": "resetPassword",  "kind": "mutation", "specRef": "F-UM-04" },
+      { "name": "me",             "kind": "query",    "specRef": "F-UM-03" }
+    ]
+  },
+  "Department": {
+    "patterns": [
+      { "code": "P-CRUD-TREE" },
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "move", "kind": "mutation", "specRef": "F-UM-08" },
+      { "name": "disable", "kind": "mutation", "specRef": "F-UM-08" }
+    ]
+  },
+  "Role": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-RBAC" },
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "assignPermissions", "kind": "mutation", "specRef": "F-UM-05" },
+      { "name": "listUsers", "kind": "query", "specRef": "F-UM-05" }
+    ]
+  },
+  "Permission": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-RBAC" }
+    ],
+    "extras": [
+      { "name": "tree", "kind": "query", "specRef": "F-UM-06" },
+      { "name": "checkMine", "kind": "query", "specRef": "F-UM-06" }
+    ]
+  },
+  "User": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-AUDIT" },
+      { "code": "P-BATCH", "options": { "import": true, "export": true } },
+      { "code": "P-RBAC" }
+    ],
+    "extras": [
+      { "name": "activate",        "kind": "mutation", "specRef": "F-UM-01" },
+      { "name": "deactivate",      "kind": "mutation", "specRef": "F-UM-07" },
+      { "name": "lock",            "kind": "mutation", "specRef": "F-UM-07" },
+      { "name": "unlock",          "kind": "mutation", "specRef": "F-UM-07" },
+      { "name": "resetPasswordByAdmin", "kind": "mutation", "specRef": "F-UM-04" },
+      { "name": "assignRoles",     "kind": "mutation", "specRef": "F-UM-06" },
+      { "name": "assignDepartment","kind": "mutation", "specRef": "F-UM-09" }
+    ]
+  },
+  "AuditLog": {
+    "patterns": [{ "code": "P-CRUD-IMMUTABLE" }],
+    "extras": [
+      { "name": "exportCsv", "kind": "mutation", "specRef": "F-UM-10" }
+    ]
+  },
+  "LoginAttempt": {
+    "patterns": [{ "code": "P-CRUD-IMMUTABLE" }],
+    "extras": []
+  },
+  "PasswordHistory": {
+    "patterns": [{ "code": "P-CRUD-IMMUTABLE" }],
+    "extras": []
+  },
+  "Session": {
+    "patterns": [],
+    "extras": [
+      { "name": "revoke", "kind": "mutation", "specRef": "F-UM-02" },
+      { "name": "listMine", "kind": "query", "specRef": "F-UM-02" }
+    ]
+  },
+  "Category": {
+    "patterns": [
+      { "code": "P-CRUD-TREE" },
+      { "code": "P-AUDIT" }
+    ],
+    "extras": []
+  },
+  "Unit": {
+    "patterns": [{ "code": "P-LOOKUP" }],
+    "extras": []
+  },
+  "Goods": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-AUDIT" },
+      { "code": "P-BATCH" }
+    ],
+    "extras": [
+      { "name": "disable", "kind": "mutation", "specRef": "F-IM-01" }
+    ]
+  },
+  "Warehouse": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-AUDIT" }
+    ],
+    "extras": []
+  },
+  "Location": {
+    "patterns": [
+      { "code": "P-CRUD-FULL" },
+      { "code": "P-AUDIT" }
+    ],
+    "extras": []
+  },
+  "Stock": {
+    "patterns": [{ "code": "P-CRUD-READONLY" }],
+    "extras": [
+      { "name": "summary", "kind": "query", "specRef": "F-IM-08" },
+      { "name": "byGoods", "kind": "query", "specRef": "F-IM-08" }
+    ]
+  },
+  "StockLog": {
+    "patterns": [{ "code": "P-CRUD-IMMUTABLE" }],
+    "extras": []
+  },
+  "Inbound": {
+    "patterns": [
+      { "code": "P-CRUD-MASTER-DETAIL", "options": { "detailEntity": "InboundLine" } },
+      { "code": "P-STATE-MACHINE", "options": {
+          "states": [10, 20, 30, 40, 90],
+          "transitions": [
+            { "from": 10, "to": 20, "action": "submit" },
+            { "from": 20, "to": 30, "action": "audit" },
+            { "from": 30, "to": 40, "action": "finish" },
+            { "from": 10, "to": 90, "action": "void" },
+            { "from": 20, "to": 90, "action": "void" }
+          ]
+      }},
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "submit", "kind": "mutation", "specRef": "F-IM-03" },
+      { "name": "audit",  "kind": "mutation", "specRef": "F-IM-03" },
+      { "name": "void",   "kind": "mutation", "specRef": "F-IM-03" },
+      { "name": "finish", "kind": "mutation", "specRef": "F-IM-03" }
+    ]
+  },
+  "Outbound": {
+    "patterns": [
+      { "code": "P-CRUD-MASTER-DETAIL", "options": { "detailEntity": "OutboundLine" } },
+      { "code": "P-STATE-MACHINE", "options": {
+          "states": [10, 20, 25, 30, 40, 90],
+          "transitions": [
+            { "from": 10, "to": 20, "action": "submit" },
+            { "from": 20, "to": 25, "action": "audit" },
+            { "from": 25, "to": 30, "action": "ship" },
+            { "from": 30, "to": 40, "action": "finish" },
+            { "from": 10, "to": 90, "action": "void" },
+            { "from": 20, "to": 90, "action": "void" }
+          ]
+      }},
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "submit", "kind": "mutation", "specRef": "F-IM-04" },
+      { "name": "audit",  "kind": "mutation", "specRef": "F-IM-04" },
+      { "name": "ship",   "kind": "mutation", "specRef": "F-IM-04" },
+      { "name": "finish", "kind": "mutation", "specRef": "F-IM-04" },
+      { "name": "void",   "kind": "mutation", "specRef": "F-IM-04" }
+    ]
+  }
+}

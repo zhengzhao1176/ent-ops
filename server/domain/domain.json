@@ -1,0 +1,473 @@
+{
+  "project": "ent-ops",
+  "version": "1.0",
+  "modules": [
+    {
+      "code": "user",
+      "name": "用户管理",
+      "entities": [
+        {
+          "code": "Department",
+          "name": "部门",
+          "table": "departments",
+          "patterns": ["P-CRUD-TREE", "P-AUDIT"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 64, "required": true, "unique": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "parentId", "type": "bigint", "required": false },
+            { "name": "path", "type": "string", "max": 512, "required": true },
+            { "name": "depth", "type": "int", "required": true },
+            { "name": "sort", "type": "int", "required": true },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "createdBy", "type": "bigint" },
+            { "name": "updatedBy", "type": "bigint" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "relations": [
+            { "type": "manyToOne", "target": "Department", "field": "parentId", "self": true }
+          ],
+          "searchFields": ["code", "name"],
+          "filterFields": ["status", "parentId"],
+          "defaultSort": { "field": "sort", "order": "asc" }
+        },
+        {
+          "code": "Role",
+          "name": "角色",
+          "table": "roles",
+          "patterns": ["P-CRUD-FULL", "P-RBAC", "P-AUDIT"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 64, "required": true, "unique": true, "immutable": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "description", "type": "string", "max": 256 },
+            { "name": "isBuiltin", "type": "boolean", "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "createdBy", "type": "bigint" },
+            { "name": "updatedBy", "type": "bigint" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "relations": [
+            { "type": "manyToMany", "target": "Permission", "through": "RolePermission" },
+            { "type": "manyToMany", "target": "User", "through": "UserRole" }
+          ],
+          "searchFields": ["code", "name"],
+          "filterFields": ["isBuiltin"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "Permission",
+          "name": "权限",
+          "table": "permissions",
+          "patterns": ["P-CRUD-FULL", "P-RBAC"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 128, "required": true, "unique": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "kind", "type": "enum", "values": ["MENU", "ACTION", "DATA"], "required": true },
+            { "name": "parentId", "type": "bigint" },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "relations": [
+            { "type": "manyToMany", "target": "Role", "through": "RolePermission" }
+          ],
+          "searchFields": ["code", "name"],
+          "filterFields": ["kind", "parentId"],
+          "defaultSort": { "field": "code", "order": "asc" }
+        },
+        {
+          "code": "User",
+          "name": "用户",
+          "table": "users",
+          "patterns": ["P-CRUD-FULL", "P-AUTH", "P-AUDIT", "P-BATCH", "P-RBAC"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "employeeNo", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "username", "type": "string", "max": 64, "required": true, "unique": true },
+            { "name": "realName", "type": "string", "max": 64, "required": true },
+            { "name": "mobile", "type": "string", "max": 20, "required": true, "unique": true, "regex": "^1[3-9]\\d{9}$" },
+            { "name": "email", "type": "string", "max": 128, "required": true, "unique": true, "format": "email" },
+            { "name": "passwordHash", "type": "string", "max": 255, "required": true, "private": true },
+            { "name": "deptId", "type": "bigint", "required": true },
+            { "name": "status", "type": "enum", "values": ["PENDING", "ACTIVE", "DISABLED", "LOCKED", "DELETED"], "required": true },
+            { "name": "loginFailCount", "type": "int", "required": true },
+            { "name": "lockedUntil", "type": "datetime" },
+            { "name": "lastLoginAt", "type": "datetime" },
+            { "name": "lastLoginIp", "type": "string", "max": 64 },
+            { "name": "passwordUpdatedAt", "type": "datetime" },
+            { "name": "mustChangePassword", "type": "boolean", "required": true },
+            { "name": "avatar", "type": "string", "max": 512 },
+            { "name": "nickname", "type": "string", "max": 64 },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "createdBy", "type": "bigint" },
+            { "name": "updatedBy", "type": "bigint" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "relations": [
+            { "type": "manyToOne", "target": "Department", "field": "deptId" },
+            { "type": "manyToMany", "target": "Role", "through": "UserRole" }
+          ],
+          "searchFields": ["employeeNo", "username", "realName", "mobile", "email"],
+          "filterFields": ["status", "deptId"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "UserRole",
+          "name": "用户-角色绑定",
+          "table": "user_roles",
+          "isJoin": true,
+          "patterns": [],
+          "fields": [
+            { "name": "userId", "type": "bigint", "required": true },
+            { "name": "roleId", "type": "bigint", "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "createdBy", "type": "bigint" }
+          ],
+          "uniqueComposite": ["userId", "roleId"]
+        },
+        {
+          "code": "RolePermission",
+          "name": "角色-权限绑定",
+          "table": "role_permissions",
+          "isJoin": true,
+          "patterns": [],
+          "fields": [
+            { "name": "roleId", "type": "bigint", "required": true },
+            { "name": "permissionId", "type": "bigint", "required": true }
+          ],
+          "uniqueComposite": ["roleId", "permissionId"]
+        },
+        {
+          "code": "PasswordHistory",
+          "name": "密码历史",
+          "table": "password_histories",
+          "patterns": ["P-CRUD-IMMUTABLE"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "userId", "type": "bigint", "required": true },
+            { "name": "passwordHash", "type": "string", "max": 255, "required": true, "private": true },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "relations": [{ "type": "manyToOne", "target": "User", "field": "userId" }],
+          "filterFields": ["userId"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "LoginAttempt",
+          "name": "登录尝试日志",
+          "table": "login_attempts",
+          "patterns": ["P-CRUD-IMMUTABLE"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "loginId", "type": "string", "max": 128, "required": true },
+            { "name": "ip", "type": "string", "max": 64, "required": true },
+            { "name": "success", "type": "boolean", "required": true },
+            { "name": "userId", "type": "bigint" },
+            { "name": "reason", "type": "string", "max": 64 },
+            { "name": "userAgent", "type": "string", "max": 512 },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "filterFields": ["success", "loginId", "ip", "userId"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "Session",
+          "name": "会话",
+          "table": "sessions",
+          "patterns": [],
+          "fields": [
+            { "name": "id", "type": "string", "max": 64, "required": true, "unique": true },
+            { "name": "userId", "type": "bigint", "required": true },
+            { "name": "tokenHash", "type": "string", "max": 255, "required": true, "private": true },
+            { "name": "ip", "type": "string", "max": 64 },
+            { "name": "userAgent", "type": "string", "max": 512 },
+            { "name": "expiresAt", "type": "datetime", "required": true },
+            { "name": "revokedAt", "type": "datetime" },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "filterFields": ["userId", "revokedAt"]
+        },
+        {
+          "code": "AuditLog",
+          "name": "操作审计日志",
+          "table": "audit_logs",
+          "patterns": ["P-CRUD-IMMUTABLE"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "operatorId", "type": "bigint" },
+            { "name": "operatorName", "type": "string", "max": 64 },
+            { "name": "ip", "type": "string", "max": 64 },
+            { "name": "actionType", "type": "string", "max": 64, "required": true },
+            { "name": "entity", "type": "string", "max": 64, "required": true },
+            { "name": "entityId", "type": "string", "max": 128 },
+            { "name": "before", "type": "json" },
+            { "name": "after", "type": "json" },
+            { "name": "result", "type": "enum", "values": ["SUCCESS", "FAILURE"], "required": true },
+            { "name": "message", "type": "string", "max": 512 },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "searchFields": ["operatorName", "entity", "actionType"],
+          "filterFields": ["operatorId", "actionType", "entity", "result"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        }
+      ]
+    },
+    {
+      "code": "inventory",
+      "name": "库存管理",
+      "entities": [
+        {
+          "code": "Category",
+          "name": "商品分类",
+          "table": "categories",
+          "patterns": ["P-CRUD-TREE", "P-AUDIT"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 64, "required": true, "unique": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "parentId", "type": "bigint" },
+            { "name": "path", "type": "string", "max": 512, "required": true },
+            { "name": "depth", "type": "int", "required": true },
+            { "name": "sort", "type": "int", "required": true },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "relations": [{ "type": "manyToOne", "target": "Category", "field": "parentId", "self": true }],
+          "searchFields": ["code", "name"],
+          "filterFields": ["status", "parentId"],
+          "defaultSort": { "field": "sort", "order": "asc" }
+        },
+        {
+          "code": "Unit",
+          "name": "计量单位",
+          "table": "units",
+          "patterns": ["P-LOOKUP"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "name", "type": "string", "max": 64, "required": true },
+            { "name": "baseUnitId", "type": "bigint" },
+            { "name": "ratio", "type": "decimal", "precision": [18, 4] },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true }
+          ],
+          "searchFields": ["code", "name"]
+        },
+        {
+          "code": "Goods",
+          "name": "商品",
+          "table": "goods",
+          "patterns": ["P-CRUD-FULL", "P-AUDIT", "P-BATCH"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 64, "required": true, "unique": true, "immutable": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "categoryId", "type": "bigint", "required": true },
+            { "name": "unitId", "type": "bigint", "required": true, "immutable": true },
+            { "name": "spec", "type": "string", "max": 128 },
+            { "name": "brand", "type": "string", "max": 64 },
+            { "name": "barcode", "type": "string", "max": 64 },
+            { "name": "safetyStock", "type": "decimal", "precision": [18, 4] },
+            { "name": "stockUpper", "type": "decimal", "precision": [18, 4] },
+            { "name": "shelfLifeDays", "type": "int" },
+            { "name": "image", "type": "string", "max": 512 },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "relations": [
+            { "type": "manyToOne", "target": "Category", "field": "categoryId" },
+            { "type": "manyToOne", "target": "Unit", "field": "unitId" }
+          ],
+          "searchFields": ["code", "name", "barcode"],
+          "filterFields": ["categoryId", "status"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "Warehouse",
+          "name": "仓库",
+          "table": "warehouses",
+          "patterns": ["P-CRUD-FULL", "P-AUDIT"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "code", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "kind", "type": "enum", "values": ["FINISHED", "RAW", "RETURN", "DEFECT"], "required": true },
+            { "name": "address", "type": "string", "max": 256 },
+            { "name": "managerId", "type": "bigint" },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "searchFields": ["code", "name"],
+          "filterFields": ["kind", "status"],
+          "defaultSort": { "field": "code", "order": "asc" }
+        },
+        {
+          "code": "Location",
+          "name": "库位",
+          "table": "locations",
+          "patterns": ["P-CRUD-FULL", "P-AUDIT"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "code", "type": "string", "max": 32, "required": true },
+            { "name": "name", "type": "string", "max": 128, "required": true },
+            { "name": "capacity", "type": "decimal", "precision": [18, 4] },
+            { "name": "status", "type": "enum", "values": ["ACTIVE", "DISABLED"], "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "deletedAt", "type": "datetime" },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "uniqueComposite": ["warehouseId", "code"],
+          "relations": [{ "type": "manyToOne", "target": "Warehouse", "field": "warehouseId" }],
+          "searchFields": ["code", "name"],
+          "filterFields": ["warehouseId", "status"],
+          "defaultSort": { "field": "code", "order": "asc" }
+        },
+        {
+          "code": "Stock",
+          "name": "库存账",
+          "table": "stocks",
+          "patterns": ["P-CRUD-READONLY"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "locationId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "batchNo", "type": "string", "max": 64 },
+            { "name": "qtyOnHand", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "qtyLocked", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "qtyAvailable", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "qtyInTransit", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "expireAt", "type": "datetime" },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "uniqueComposite": ["warehouseId", "locationId", "goodsId", "batchNo"],
+          "filterFields": ["warehouseId", "locationId", "goodsId"]
+        },
+        {
+          "code": "StockLog",
+          "name": "库存流水",
+          "table": "stock_logs",
+          "patterns": ["P-CRUD-IMMUTABLE"],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "stockId", "type": "bigint", "required": true },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "changeType", "type": "string", "max": 32, "required": true },
+            { "name": "qtyBefore", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "qtyChange", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "qtyAfter", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "refDocNo", "type": "string", "max": 64 },
+            { "name": "operatorId", "type": "bigint" },
+            { "name": "createdAt", "type": "datetime", "required": true }
+          ],
+          "filterFields": ["stockId", "goodsId", "warehouseId", "changeType"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "Inbound",
+          "name": "入库单",
+          "table": "inbounds",
+          "patterns": ["P-CRUD-MASTER-DETAIL", "P-STATE-MACHINE", "P-AUDIT"],
+          "options": { "detailEntity": "InboundLine", "states": [10, 20, 30, 40, 90] },
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "docNo", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "kind", "type": "enum", "values": ["PURCHASE", "RETURN", "TRANSFER", "STOCKTAKE", "OTHER"], "required": true },
+            { "name": "sourceDocNo", "type": "string", "max": 64 },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "operatorId", "type": "bigint", "required": true },
+            { "name": "operationAt", "type": "datetime", "required": true },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "status", "type": "int", "required": true },
+            { "name": "statusUpdatedAt", "type": "datetime" },
+            { "name": "statusUpdatedBy", "type": "bigint" },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "searchFields": ["docNo", "sourceDocNo"],
+          "filterFields": ["kind", "warehouseId", "status"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "InboundLine",
+          "name": "入库单行",
+          "table": "inbound_lines",
+          "patterns": [],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "inboundId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "locationId", "type": "bigint", "required": true },
+            { "name": "batchNo", "type": "string", "max": 64 },
+            { "name": "qty", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "unitPrice", "type": "decimal", "precision": [18, 4] },
+            { "name": "expireAt", "type": "datetime" }
+          ]
+        },
+        {
+          "code": "Outbound",
+          "name": "出库单",
+          "table": "outbounds",
+          "patterns": ["P-CRUD-MASTER-DETAIL", "P-STATE-MACHINE", "P-AUDIT"],
+          "options": { "detailEntity": "OutboundLine", "states": [10, 20, 25, 30, 40, 90] },
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "docNo", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "kind", "type": "enum", "values": ["SALES", "USE", "TRANSFER", "STOCKTAKE", "DAMAGE", "OTHER"], "required": true },
+            { "name": "targetDocNo", "type": "string", "max": 64 },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "applicantId", "type": "bigint" },
+            { "name": "operatorId", "type": "bigint", "required": true },
+            { "name": "operationAt", "type": "datetime", "required": true },
+            { "name": "pickStrategy", "type": "enum", "values": ["FIFO", "FEFO", "MANUAL"], "required": true },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "status", "type": "int", "required": true },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "searchFields": ["docNo", "targetDocNo"],
+          "filterFields": ["kind", "warehouseId", "status"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "OutboundLine",
+          "name": "出库单行",
+          "table": "outbound_lines",
+          "patterns": [],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "outboundId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "locationId", "type": "bigint", "required": true },
+            { "name": "batchNo", "type": "string", "max": 64 },
+            { "name": "qty", "type": "decimal", "precision": [18, 4], "required": true }
+          ]
+        }
+      ]
+    }
+  ]
+}

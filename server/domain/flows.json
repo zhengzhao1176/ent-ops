@@ -1,0 +1,134 @@
+[
+  {
+    "code": "flow-onboard",
+    "name": "新员工开户与首次登录",
+    "role": "sysAdmin",
+    "specRef": "F-UM-01 + F-UM-04",
+    "steps": [
+      { "action": "navigate", "to": "/admin/users" },
+      { "action": "click",    "target": "btn-new-user" },
+      { "action": "fill",     "target": "input-employeeNo", "value": "{{generated.employeeNo}}" },
+      { "action": "fill",     "target": "input-username",   "value": "{{generated.username}}" },
+      { "action": "fill",     "target": "input-realName",   "value": "测试员工" },
+      { "action": "fill",     "target": "input-mobile",     "value": "{{generated.mobile}}" },
+      { "action": "fill",     "target": "input-email",      "value": "{{generated.email}}" },
+      { "action": "select",   "target": "select-deptId",    "value": "1" },
+      { "action": "click",    "target": "btn-submit" },
+      { "action": "expect",   "kind": "toast", "text": "创建成功" },
+      { "action": "expect",   "kind": "row",   "in": "table-users", "match": { "username": "{{generated.username}}" } },
+      { "action": "click",    "target": "row-user-{{prev.id}} btn-reset-password" },
+      { "action": "click",    "target": "btn-confirm" },
+      { "action": "expect",   "kind": "toast", "text": "已重置" }
+    ]
+  },
+  {
+    "code": "flow-first-login-change-password",
+    "name": "首次登录强制改密",
+    "role": "guest",
+    "specRef": "F-UM-04-EXTRA-C001",
+    "steps": [
+      { "action": "navigate", "to": "/login" },
+      { "action": "fill",     "target": "input-loginId",  "value": "{{seed.newUser.username}}" },
+      { "action": "fill",     "target": "input-password", "value": "{{seed.newUser.initialPassword}}" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "expect",   "kind": "url", "text": "/change-password" },
+      { "action": "fill",     "target": "input-oldPassword",     "value": "{{seed.newUser.initialPassword}}" },
+      { "action": "fill",     "target": "input-newPassword",     "value": "Aa123456!" },
+      { "action": "fill",     "target": "input-confirmPassword", "value": "Aa123456!" },
+      { "action": "click",    "target": "btn-submit" },
+      { "action": "expect",   "kind": "toast", "text": "修改成功" },
+      { "action": "expect",   "kind": "url",   "text": "/" }
+    ]
+  },
+  {
+    "code": "flow-login-lock-after-5-fails",
+    "name": "连续 5 次密码错误锁定 30 分钟",
+    "role": "guest",
+    "specRef": "F-UM-02-EXTRA",
+    "steps": [
+      { "action": "navigate", "to": "/login" },
+      { "action": "fill",     "target": "input-loginId",  "value": "{{seed.user.username}}" },
+      { "action": "fill",     "target": "input-password", "value": "wrong-password" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "fill",     "target": "input-password", "value": "wrong-password" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "fill",     "target": "input-password", "value": "wrong-password" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "fill",     "target": "input-password", "value": "wrong-password" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "fill",     "target": "input-password", "value": "wrong-password" },
+      { "action": "click",    "target": "btn-login" },
+      { "action": "expect",   "kind": "toast", "text": "账号已锁定" }
+    ]
+  },
+  {
+    "code": "flow-offboard",
+    "name": "离职禁用→注销",
+    "role": "sysAdmin",
+    "specRef": "F-UM-07 + BR-UM-02",
+    "steps": [
+      { "action": "navigate", "to": "/admin/users" },
+      { "action": "fill",     "target": "input-search", "value": "{{seed.user.username}}" },
+      { "action": "click",    "target": "btn-search" },
+      { "action": "click",    "target": "row-user-{{seed.user.id}} btn-deactivate" },
+      { "action": "click",    "target": "btn-confirm" },
+      { "action": "expect",   "kind": "toast", "text": "已禁用" },
+      { "action": "expect",   "kind": "value", "target": "row-user-{{seed.user.id}} badge-status", "text": "禁用" }
+    ]
+  },
+  {
+    "code": "flow-permission-change",
+    "name": "权限变更立即生效",
+    "role": "sysAdmin",
+    "specRef": "BR-UM-04 + F-UM-06",
+    "steps": [
+      { "action": "navigate", "to": "/admin/users/{{seed.user.id}}" },
+      { "action": "click",    "target": "btn-assign-roles" },
+      { "action": "select",   "target": "select-role", "value": "ROLE_AUDITOR" },
+      { "action": "click",    "target": "btn-confirm" },
+      { "action": "expect",   "kind": "toast", "text": "已分配" }
+    ]
+  },
+  {
+    "code": "flow-purchase-inbound",
+    "name": "采购入库到库存可见",
+    "role": "whMgr",
+    "specRef": "F-IM-03 + F-IM-08 + F-IM-10",
+    "steps": [
+      { "action": "navigate", "to": "/inv/inbound/new" },
+      { "action": "select",   "target": "select-kind",        "value": "PURCHASE" },
+      { "action": "fill",     "target": "input-sourceDocNo",  "value": "PO-{{generated.id}}" },
+      { "action": "select",   "target": "select-warehouseId", "value": "1" },
+      { "action": "click",    "target": "btn-add-line" },
+      { "action": "select",   "target": "select-line0-goods",    "value": "{{seed.goods.id}}" },
+      { "action": "select",   "target": "select-line0-location", "value": "1" },
+      { "action": "fill",     "target": "input-line0-qty",       "value": "100" },
+      { "action": "click",    "target": "btn-submit" },
+      { "action": "expect",   "kind": "toast", "text": "草稿已保存" },
+      { "action": "click",    "target": "btn-audit" },
+      { "action": "click",    "target": "btn-confirm" },
+      { "action": "expect",   "kind": "toast", "text": "审核通过" },
+      { "action": "navigate", "to": "/inv/stock?goodsId={{seed.goods.id}}" },
+      { "action": "expect",   "kind": "row", "in": "table-stock", "match": { "qtyOnHand": "100.0000" } },
+      { "action": "navigate", "to": "/inv/stock-logs?goodsId={{seed.goods.id}}" },
+      { "action": "expect",   "kind": "row", "in": "table-stock-logs", "match": { "changeType": "INBOUND" } }
+    ]
+  },
+  {
+    "code": "flow-sales-outbound-insufficient-stock",
+    "name": "销售出库可用库存不足应被阻止",
+    "role": "whMgr",
+    "specRef": "F-IM-04-EXTRA + BR-IM-03",
+    "steps": [
+      { "action": "navigate", "to": "/inv/outbound/new" },
+      { "action": "select",   "target": "select-kind",        "value": "SALES" },
+      { "action": "select",   "target": "select-warehouseId", "value": "1" },
+      { "action": "click",    "target": "btn-add-line" },
+      { "action": "select",   "target": "select-line0-goods",    "value": "{{seed.goods.id}}" },
+      { "action": "select",   "target": "select-line0-location", "value": "1" },
+      { "action": "fill",     "target": "input-line0-qty",       "value": "999999" },
+      { "action": "click",    "target": "btn-submit" },
+      { "action": "expect",   "kind": "toast", "text": "可用库存不足" }
+    ]
+  }
+]

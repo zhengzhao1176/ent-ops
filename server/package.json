@@ -1,0 +1,52 @@
+{
+  "name": "ent-ops-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test",
+    "test:all": "node scripts/run-all.mjs",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:reset": "prisma migrate reset --force --skip-seed"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@prisma/client": "^5.22.0",
+    "@tanstack/react-query": "^5.62.0",
+    "@trpc/client": "^11.0.0-rc.660",
+    "@trpc/next": "^11.0.0-rc.660",
+    "@trpc/react-query": "^11.0.0-rc.660",
+    "@trpc/server": "^11.0.0-rc.660",
+    "argon2": "^0.41.1",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^2.1.1",
+    "jose": "^5.9.6",
+    "next": "^14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.2",
+    "superjson": "^2.2.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitest/ui": "^2.1.5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.15",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  }
+}
