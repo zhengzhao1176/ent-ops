@@ -234,6 +234,44 @@ export const stockRepo = {
     });
   },
 
+  /**
+   * Add to qtyInTransit and recompute qtyAvailable.
+   * Used by transfer.audit to mark qty as "在途" on the destination slot.
+   */
+  async addInTransit(db: Db, stockId: bigint, deltaStr: string) {
+    const cur = await db.stock.findUnique({ where: { id: stockId } });
+    if (!cur) throw new Error('NOT_FOUND');
+    const newInTransit = addDec(cur.qtyInTransit, deltaStr);
+    const newAvailable = recomputeAvailable(cur.qtyOnHand, cur.qtyLocked, newInTransit);
+    return db.stock.update({
+      where: { id: stockId },
+      data: {
+        qtyInTransit: newInTransit,
+        qtyAvailable: newAvailable,
+        version: { increment: 1 },
+      },
+    });
+  },
+
+  /**
+   * Subtract from qtyInTransit and recompute qtyAvailable.
+   * Used by transfer.receive to drain "在途" once goods arrive.
+   */
+  async subInTransit(db: Db, stockId: bigint, deltaStr: string) {
+    const cur = await db.stock.findUnique({ where: { id: stockId } });
+    if (!cur) throw new Error('NOT_FOUND');
+    const newInTransit = subDec(cur.qtyInTransit, deltaStr);
+    const newAvailable = recomputeAvailable(cur.qtyOnHand, cur.qtyLocked, newInTransit);
+    return db.stock.update({
+      where: { id: stockId },
+      data: {
+        qtyInTransit: newInTransit,
+        qtyAvailable: newAvailable,
+        version: { increment: 1 },
+      },
+    });
+  },
+
   async summary(
     db: Db,
     input?: { warehouseId?: bigint; categoryId?: bigint },

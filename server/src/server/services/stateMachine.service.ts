@@ -16,6 +16,14 @@ const TRANSITIONS: Record<string, Transition[]> = {
     { from: 10, to: 90, action: 'void' },
     { from: 20, to: 90, action: 'void' },
   ],
+  Transfer: [
+    { from: 10, to: 20, action: 'submit' },
+    { from: 20, to: 25, action: 'audit' },
+    { from: 25, to: 30, action: 'receive' },
+    { from: 30, to: 40, action: 'finish' },
+    { from: 10, to: 90, action: 'void' },
+    { from: 20, to: 90, action: 'void' },
+  ],
 };
 
 export function validateTransition(entity: string, from: number, to: number): void {

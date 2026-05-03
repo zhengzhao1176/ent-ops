@@ -14,6 +14,7 @@ import { stockRouter } from './stock.router';
 import { stockLogRouter } from './stockLog.router';
 import { inboundRouter } from './inbound.router';
 import { outboundRouter } from './outbound.router';
+import { transferRouter } from './transfer.router';
 
 export const appRouter = router({
   auth: authRouter,
@@ -31,6 +32,7 @@ export const appRouter = router({
   stockLog: stockLogRouter,
   inbound: inboundRouter,
   outbound: outboundRouter,
+  transfer: transferRouter,
 });
 
 export type AppRouter = typeof appRouter;

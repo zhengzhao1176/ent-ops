@@ -15,3 +15,4 @@ export { stockRepo } from './stock.repo';
 export { stockLogRepo } from './stockLog.repo';
 export { inboundRepo } from './inbound.repo';
 export { outboundRepo } from './outbound.repo';
+export { transferRepo } from './transfer.repo';
