@@ -252,5 +252,78 @@
     "extraCases": [
       { "id": "C-BR-IM-10-001", "name": "任何 service 路径都不允许将 Stock.qtyOnHand 改成负数", "given": "Stock=5", "when": "stock.applyDelta(-10)", "then": "抛 PRECONDITION_FAILED 且 DB 行不变", "kind": "integration" }
     ]
+  },
+  "F-IM-06-EXTRA": {
+    "feature": "库存盘点业务规则",
+    "patternBase": [{ "entity": "Stocktake", "pattern": "P-STATE-MACHINE" }],
+    "extraCases": [
+      {
+        "id": "C-IM-06-001",
+        "name": "freeze (10→20) 自动快照范围内 SKU 的账面数到 line.bookQty",
+        "given": "草稿盘点单 status=10，scope 覆盖仓库 W1 库位 L1 的两个商品 G1(在库=100)、G2(在库=50)",
+        "when": "调用 stocktake.freeze",
+        "then": "status=20；StocktakeLine 表生成两条记录，line(G1).bookQty='100'，line(G2).bookQty='50'，每条 (warehouse, location, goods) 组合都有一行",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-002",
+        "name": "冻结期间禁止对范围内 SKU 出入库",
+        "given": "存在 status=20 的盘点单，scope 包含 SKU=G1@W1@L1；另有一张草稿入库单 inboundDraft 含明细 G1@W1@L1 qty=10",
+        "when": "对 inboundDraft 调用 inbound.audit",
+        "then": "抛 PRECONDITION_FAILED code=STOCKTAKE_FROZEN；Stock.qtyOnHand 不变",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-003",
+        "name": "更新 actualQty 时服务端自动计算 difference = actualQty - bookQty",
+        "given": "盘点单 status=20，line(G1).bookQty='100'",
+        "when": "调用 stocktake.updateLine 设 actualQty='95'",
+        "then": "line(G1).actualQty='95'，line(G1).difference='-5' 已持久化",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-004",
+        "name": "差异为非零必须填 reason，否则 submit 拒绝",
+        "given": "盘点单 status=20，line(G1).difference='-5' 且 reason 为空",
+        "when": "调用 stocktake.submit (20→25)",
+        "then": "抛 BAD_REQUEST code=MISSING_DIFFERENCE_REASON，状态保持 20",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-005",
+        "name": "commit (25→30) 自动生成盘盈/盘亏单并审核",
+        "given": "盘点单 status=25，line(G1).difference='5'(盘盈)，line(G2).difference='-3'(盘亏)，差异原因均已填",
+        "when": "调用 stocktake.commit",
+        "then": "status=30；自动创建 1 张 Inbound (kind=STOCKTAKE qty=5) 并审核到状态 30；自动创建 1 张 Outbound (kind=STOCKTAKE qty=3) 并审核到 ship 完成；Stocktake.gainDocNo=该 Inbound.docNo；Stocktake.lossDocNo=该 Outbound.docNo；Stock.qtyOnHand(G1) 增 5；Stock.qtyOnHand(G2) 减 3",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-006",
+        "name": "commit 完成后冻结解除，范围内 SKU 可恢复正常出入库",
+        "given": "盘点单 status=30 (已 commit)，scope 包含 G1@W1@L1",
+        "when": "对一张包含 G1@W1@L1 的入库单调用 inbound.audit",
+        "then": "审核成功，Stock.qtyOnHand 正常增加，不再抛 STOCKTAKE_FROZEN",
+        "kind": "integration"
+      },
+      {
+        "id": "C-IM-06-007",
+        "name": "cancel (10/20→90) 不调整库存，仅解除冻结",
+        "given": "盘点单 status=20，已 freeze，line(G1).bookQty='100' 已快照",
+        "when": "调用 stocktake.cancel",
+        "then": "status=90；Stock.qtyOnHand 与 freeze 前一致（无任何 StockLog 新增）；范围内 SKU 可重新出入库",
+        "kind": "integration"
+      }
+    ]
+  },
+  "STOCKTAKE-MATH-UNIT": {
+    "feature": "盘点差异纯函数",
+    "patternBase": [],
+    "extraCases": [
+      { "id": "C-STK-001", "name": "实盘 < 账面 返回负差异（盘亏）", "given": "无", "when": "computeDifference('100', '95')", "then": "返回 '-5'", "kind": "unit" },
+      { "id": "C-STK-002", "name": "实盘 > 账面 返回正差异（盘盈）", "given": "无", "when": "computeDifference('100', '105')", "then": "返回 '5'", "kind": "unit" },
+      { "id": "C-STK-003", "name": "实盘 = 账面 返回 0", "given": "无", "when": "computeDifference('100', '100')", "then": "返回 '0'", "kind": "unit" },
+      { "id": "C-STK-004", "name": "高精度小数差异保留小数位", "given": "无", "when": "computeDifference('10.5000', '10.4995')", "then": "返回 '-0.0005'", "kind": "unit" },
+      { "id": "C-STK-005", "name": "classifyDifference 按符号返回 GAIN/LOSS/NONE", "given": "无", "when": "classifyDifference('5') / classifyDifference('-3') / classifyDifference('0')", "then": "依次返回 'GAIN' / 'LOSS' / 'NONE'", "kind": "unit" }
+    ]
   }
 }

@@ -261,13 +261,14 @@ model Goods {
   deletedAt     DateTime? @map("deleted_at")
   version       Int       @default(0)
 
-  category      Category       @relation(fields: [categoryId], references: [id])
-  unit          Unit           @relation(fields: [unitId], references: [id])
-  stocks        Stock[]
-  stockLogs     StockLog[]
-  inboundLines  InboundLine[]
-  outboundLines OutboundLine[]
-  transferLines TransferLine[]
+  category       Category        @relation(fields: [categoryId], references: [id])
+  unit           Unit            @relation(fields: [unitId], references: [id])
+  stocks         Stock[]
+  stockLogs      StockLog[]
+  inboundLines   InboundLine[]
+  outboundLines  OutboundLine[]
+  transferLines  TransferLine[]
+  stocktakeLines StocktakeLine[]
 
   @@index([categoryId])
   @@index([deletedAt])
@@ -292,8 +293,9 @@ model Warehouse {
   stocks        Stock[]
   inbounds      Inbound[]
   outbounds     Outbound[]
-  transfersFrom Transfer[] @relation("TransferFrom")
-  transfersTo   Transfer[] @relation("TransferTo")
+  transfersFrom Transfer[]  @relation("TransferFrom")
+  transfersTo   Transfer[]  @relation("TransferTo")
+  stocktakes    Stocktake[] @relation("StocktakeWarehouse")
 
   @@index([deletedAt])
   @@map("warehouses")
@@ -488,4 +490,50 @@ model TransferLine {
 
   @@index([transferId])
   @@map("transfer_lines")
+}
+
+model Stocktake {
+  id              BigInt    @id @default(autoincrement())
+  docNo           String    @unique @map("doc_no")
+  kind            String
+  warehouseId     BigInt    @map("warehouse_id")
+  locationIds     String?   @map("location_ids")
+  categoryIds     String?   @map("category_ids")
+  operatorId      BigInt    @map("operator_id")
+  operationAt     DateTime  @map("operation_at")
+  reason          String?
+  remark          String?
+  status          Int       @default(10)
+  statusUpdatedAt DateTime? @map("status_updated_at")
+  statusUpdatedBy BigInt?   @map("status_updated_by")
+  gainDocNo       String?   @map("gain_doc_no")
+  lossDocNo       String?   @map("loss_doc_no")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  version         Int       @default(0)
+
+  warehouse Warehouse       @relation("StocktakeWarehouse", fields: [warehouseId], references: [id])
+  lines     StocktakeLine[]
+
+  @@index([warehouseId, status])
+  @@index([status])
+  @@map("stocktakes")
+}
+
+model StocktakeLine {
+  id          BigInt  @id @default(autoincrement())
+  stocktakeId BigInt  @map("stocktake_id")
+  goodsId     BigInt  @map("goods_id")
+  locationId  BigInt  @map("location_id")
+  batchNo     String  @default("") @map("batch_no")
+  bookQty     String  @map("book_qty")
+  actualQty   String? @map("actual_qty")
+  difference  String?
+  reason      String?
+
+  stocktake Stocktake @relation(fields: [stocktakeId], references: [id], onDelete: Cascade)
+  goods     Goods     @relation(fields: [goodsId], references: [id])
+
+  @@index([stocktakeId])
+  @@map("stocktake_lines")
 }

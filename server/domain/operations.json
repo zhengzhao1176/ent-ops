@@ -196,5 +196,29 @@
       { "name": "finish",  "kind": "mutation", "specRef": "F-IM-05" },
       { "name": "void",    "kind": "mutation", "specRef": "F-IM-05" }
     ]
+  },
+  "Stocktake": {
+    "patterns": [
+      { "code": "P-CRUD-MASTER-DETAIL", "options": { "detailEntity": "StocktakeLine" } },
+      { "code": "P-STATE-MACHINE", "options": {
+          "states": [10, 20, 25, 30, 40, 90],
+          "transitions": [
+            { "from": 10, "to": 20, "action": "freeze" },
+            { "from": 20, "to": 25, "action": "submit" },
+            { "from": 25, "to": 30, "action": "commit" },
+            { "from": 30, "to": 40, "action": "finish" },
+            { "from": 10, "to": 90, "action": "cancel" },
+            { "from": 20, "to": 90, "action": "cancel" }
+          ]
+      }},
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "freeze", "kind": "mutation", "specRef": "F-IM-06" },
+      { "name": "submit", "kind": "mutation", "specRef": "F-IM-06" },
+      { "name": "commit", "kind": "mutation", "specRef": "F-IM-06" },
+      { "name": "finish", "kind": "mutation", "specRef": "F-IM-06" },
+      { "name": "cancel", "kind": "mutation", "specRef": "F-IM-06" }
+    ]
   }
 }

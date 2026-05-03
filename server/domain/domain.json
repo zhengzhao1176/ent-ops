@@ -511,6 +511,53 @@
             { "name": "shippedQty", "type": "decimal", "precision": [18, 4] },
             { "name": "receivedQty", "type": "decimal", "precision": [18, 4] }
           ]
+        },
+        {
+          "code": "Stocktake",
+          "name": "盘点单",
+          "table": "stocktakes",
+          "patterns": ["P-CRUD-MASTER-DETAIL", "P-STATE-MACHINE", "P-AUDIT"],
+          "options": { "detailEntity": "StocktakeLine", "states": [10, 20, 25, 30, 40, 90] },
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "docNo", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "kind", "type": "enum", "values": ["FULL", "SAMPLING", "DYNAMIC"], "required": true },
+            { "name": "warehouseId", "type": "bigint", "required": true },
+            { "name": "locationIds", "type": "json" },
+            { "name": "categoryIds", "type": "json" },
+            { "name": "operatorId", "type": "bigint", "required": true },
+            { "name": "operationAt", "type": "datetime", "required": true },
+            { "name": "reason", "type": "string", "max": 256 },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "status", "type": "int", "required": true },
+            { "name": "statusUpdatedAt", "type": "datetime" },
+            { "name": "statusUpdatedBy", "type": "bigint" },
+            { "name": "gainDocNo", "type": "string", "max": 32 },
+            { "name": "lossDocNo", "type": "string", "max": 32 },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "searchFields": ["docNo"],
+          "filterFields": ["kind", "warehouseId", "status"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "StocktakeLine",
+          "name": "盘点单行",
+          "table": "stocktake_lines",
+          "patterns": [],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "stocktakeId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "locationId", "type": "bigint", "required": true },
+            { "name": "batchNo", "type": "string", "max": 64 },
+            { "name": "bookQty", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "actualQty", "type": "decimal", "precision": [18, 4] },
+            { "name": "difference", "type": "decimal", "precision": [18, 4] },
+            { "name": "reason", "type": "string", "max": 256 }
+          ]
         }
       ]
     }
