@@ -172,5 +172,29 @@
       { "name": "finish", "kind": "mutation", "specRef": "F-IM-04" },
       { "name": "void",   "kind": "mutation", "specRef": "F-IM-04" }
     ]
+  },
+  "Transfer": {
+    "patterns": [
+      { "code": "P-CRUD-MASTER-DETAIL", "options": { "detailEntity": "TransferLine" } },
+      { "code": "P-STATE-MACHINE", "options": {
+          "states": [10, 20, 25, 30, 40, 90],
+          "transitions": [
+            { "from": 10, "to": 20, "action": "submit" },
+            { "from": 20, "to": 25, "action": "audit" },
+            { "from": 25, "to": 30, "action": "receive" },
+            { "from": 30, "to": 40, "action": "finish" },
+            { "from": 10, "to": 90, "action": "void" },
+            { "from": 20, "to": 90, "action": "void" }
+          ]
+      }},
+      { "code": "P-AUDIT" }
+    ],
+    "extras": [
+      { "name": "submit",  "kind": "mutation", "specRef": "F-IM-05" },
+      { "name": "audit",   "kind": "mutation", "specRef": "F-IM-05" },
+      { "name": "receive", "kind": "mutation", "specRef": "F-IM-05" },
+      { "name": "finish",  "kind": "mutation", "specRef": "F-IM-05" },
+      { "name": "void",    "kind": "mutation", "specRef": "F-IM-05" }
+    ]
   }
 }

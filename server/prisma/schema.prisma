@@ -267,6 +267,7 @@ model Goods {
   stockLogs     StockLog[]
   inboundLines  InboundLine[]
   outboundLines OutboundLine[]
+  transferLines TransferLine[]
 
   @@index([categoryId])
   @@index([deletedAt])
@@ -287,10 +288,12 @@ model Warehouse {
   deletedAt DateTime? @map("deleted_at")
   version   Int       @default(0)
 
-  locations Location[]
-  stocks    Stock[]
-  inbounds  Inbound[]
-  outbounds Outbound[]
+  locations     Location[]
+  stocks        Stock[]
+  inbounds      Inbound[]
+  outbounds     Outbound[]
+  transfersFrom Transfer[] @relation("TransferFrom")
+  transfersTo   Transfer[] @relation("TransferTo")
 
   @@index([deletedAt])
   @@map("warehouses")
@@ -439,4 +442,50 @@ model OutboundLine {
 
   @@index([outboundId])
   @@map("outbound_lines")
+}
+
+model Transfer {
+  id              BigInt    @id @default(autoincrement())
+  docNo           String    @unique @map("doc_no")
+  kind            String
+  fromWarehouseId BigInt    @map("from_warehouse_id")
+  fromLocationId  BigInt    @map("from_location_id")
+  toWarehouseId   BigInt    @map("to_warehouse_id")
+  toLocationId    BigInt    @map("to_location_id")
+  applicantId     BigInt?   @map("applicant_id")
+  operatorId      BigInt    @map("operator_id")
+  operationAt     DateTime  @map("operation_at")
+  reason          String?
+  remark          String?
+  status          Int       @default(10)
+  statusUpdatedAt DateTime? @map("status_updated_at")
+  statusUpdatedBy BigInt?   @map("status_updated_by")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  version         Int       @default(0)
+
+  fromWarehouse Warehouse      @relation("TransferFrom", fields: [fromWarehouseId], references: [id])
+  toWarehouse   Warehouse      @relation("TransferTo", fields: [toWarehouseId], references: [id])
+  lines         TransferLine[]
+
+  @@index([fromWarehouseId, status])
+  @@index([toWarehouseId, status])
+  @@index([status])
+  @@map("transfers")
+}
+
+model TransferLine {
+  id          BigInt  @id @default(autoincrement())
+  transferId  BigInt  @map("transfer_id")
+  goodsId     BigInt  @map("goods_id")
+  batchNo     String  @default("") @map("batch_no")
+  qty         String
+  shippedQty  String? @map("shipped_qty")
+  receivedQty String? @map("received_qty")
+
+  transfer Transfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  goods    Goods    @relation(fields: [goodsId], references: [id])
+
+  @@index([transferId])
+  @@map("transfer_lines")
 }

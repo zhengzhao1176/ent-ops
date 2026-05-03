@@ -466,6 +466,51 @@
             { "name": "batchNo", "type": "string", "max": 64 },
             { "name": "qty", "type": "decimal", "precision": [18, 4], "required": true }
           ]
+        },
+        {
+          "code": "Transfer",
+          "name": "调拨单",
+          "table": "transfers",
+          "patterns": ["P-CRUD-MASTER-DETAIL", "P-STATE-MACHINE", "P-AUDIT"],
+          "options": { "detailEntity": "TransferLine", "states": [10, 20, 25, 30, 40, 90] },
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "docNo", "type": "string", "max": 32, "required": true, "unique": true },
+            { "name": "kind", "type": "enum", "values": ["INTERNAL", "RETURN", "ADJUSTMENT"], "required": true },
+            { "name": "fromWarehouseId", "type": "bigint", "required": true },
+            { "name": "fromLocationId", "type": "bigint", "required": true },
+            { "name": "toWarehouseId", "type": "bigint", "required": true },
+            { "name": "toLocationId", "type": "bigint", "required": true },
+            { "name": "applicantId", "type": "bigint" },
+            { "name": "operatorId", "type": "bigint", "required": true },
+            { "name": "operationAt", "type": "datetime", "required": true },
+            { "name": "reason", "type": "string", "max": 256 },
+            { "name": "remark", "type": "string", "max": 256 },
+            { "name": "status", "type": "int", "required": true },
+            { "name": "statusUpdatedAt", "type": "datetime" },
+            { "name": "statusUpdatedBy", "type": "bigint" },
+            { "name": "createdAt", "type": "datetime", "required": true },
+            { "name": "updatedAt", "type": "datetime", "required": true },
+            { "name": "version", "type": "int", "required": true }
+          ],
+          "searchFields": ["docNo"],
+          "filterFields": ["kind", "fromWarehouseId", "toWarehouseId", "status"],
+          "defaultSort": { "field": "createdAt", "order": "desc" }
+        },
+        {
+          "code": "TransferLine",
+          "name": "调拨单行",
+          "table": "transfer_lines",
+          "patterns": [],
+          "fields": [
+            { "name": "id", "type": "bigint", "required": true, "unique": true },
+            { "name": "transferId", "type": "bigint", "required": true },
+            { "name": "goodsId", "type": "bigint", "required": true },
+            { "name": "batchNo", "type": "string", "max": 64 },
+            { "name": "qty", "type": "decimal", "precision": [18, 4], "required": true },
+            { "name": "shippedQty", "type": "decimal", "precision": [18, 4] },
+            { "name": "receivedQty", "type": "decimal", "precision": [18, 4] }
+          ]
         }
       ]
     }
