@@ -1,0 +1,12 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e275]
+  - main [ref=e276]:
+    - generic [ref=e277]:
+      - heading "登录" [level=1] [ref=e278]
+      - generic [ref=e279]:
+        - generic [ref=e280]: 账号（工号 / 手机号 / 邮箱）
+        - textbox [ref=e281]
+      - generic [ref=e282]:
+        - generic [ref=e283]: 密码
+        - textbox [ref=e284]
+      - button "登录" [ref=e285] [cursor=pointer]

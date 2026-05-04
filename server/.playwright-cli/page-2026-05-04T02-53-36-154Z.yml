@@ -1,0 +1,97 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]: 企业运营
+      - navigation [ref=e5]:
+        - link "仪表板" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e7] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e8] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e9] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e10] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e11] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e12] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e13] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e14] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e15] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e16] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e17] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e18]:
+      - banner [ref=e19]:
+        - generic [ref=e20]: /inv/goods
+        - generic [ref=e21]:
+          - generic [ref=e22]: 超级管理员
+          - button "退出" [ref=e23] [cursor=pointer]
+      - main [ref=e24]:
+        - generic [ref=e25]:
+          - heading "商品管理" [level=1] [ref=e26]
+          - link "新建商品" [ref=e27] [cursor=pointer]:
+            - /url: /inv/goods/new
+        - generic [ref=e28]:
+          - textbox "搜索 编码/名称/条码" [ref=e29]
+          - combobox [ref=e30]:
+            - option "全部分类" [selected]
+            - option "默认分类"
+          - combobox [ref=e31]:
+            - option "全部状态" [selected]
+            - option "启用"
+            - option "禁用"
+          - button "查询" [ref=e32] [cursor=pointer]
+        - table [ref=e34]:
+          - rowgroup [ref=e35]:
+            - row "编码 名称 规格 品牌 条码 安全库存 状态 操作" [ref=e36]:
+              - columnheader "编码" [ref=e37]
+              - columnheader "名称" [ref=e38]
+              - columnheader "规格" [ref=e39]
+              - columnheader "品牌" [ref=e40]
+              - columnheader "条码" [ref=e41]
+              - columnheader "安全库存" [ref=e42]
+              - columnheader "状态" [ref=e43]
+              - columnheader "操作" [ref=e44]
+          - rowgroup [ref=e45]:
+            - row "WG-862531107 WalkerGoods-862531107 - - - - 启用 编辑 禁用 删除" [ref=e46]:
+              - cell "WG-862531107" [ref=e47]
+              - cell "WalkerGoods-862531107" [ref=e48]
+              - cell "-" [ref=e49]
+              - cell "-" [ref=e50]
+              - cell "-" [ref=e51]
+              - cell "-" [ref=e52]
+              - cell "启用" [ref=e53]:
+                - generic [ref=e54]: 启用
+              - cell "编辑 禁用 删除" [ref=e55]:
+                - link "编辑" [ref=e56] [cursor=pointer]:
+                  - /url: /inv/goods/3
+                - button "禁用" [ref=e57] [cursor=pointer]
+                - button "删除" [ref=e58] [cursor=pointer]
+            - row "WG-862501308 WalkerGoods-862501308 - - - - 启用 编辑 禁用 删除" [ref=e59]:
+              - cell "WG-862501308" [ref=e60]
+              - cell "WalkerGoods-862501308" [ref=e61]
+              - cell "-" [ref=e62]
+              - cell "-" [ref=e63]
+              - cell "-" [ref=e64]
+              - cell "-" [ref=e65]
+              - cell "启用" [ref=e66]:
+                - generic [ref=e67]: 启用
+              - cell "编辑 禁用 删除" [ref=e68]:
+                - link "编辑" [ref=e69] [cursor=pointer]:
+                  - /url: /inv/goods/2
+                - button "禁用" [ref=e70] [cursor=pointer]
+                - button "删除" [ref=e71] [cursor=pointer]
+        - generic [ref=e72]:
+          - generic [ref=e73]: 共 2 条
+          - generic [ref=e74]:
+            - button "上一页" [disabled] [ref=e75]
+            - generic [ref=e76]: 第 1 页
+            - button "下一页" [disabled] [ref=e77]
+  - alert [ref=e78]

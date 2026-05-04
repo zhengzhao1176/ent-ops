@@ -1,0 +1,287 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]: 企业运营
+      - navigation [ref=e5]:
+        - link "仪表板" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e7] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e8] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e9] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e10] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e11] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e12] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e13] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e14] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e15] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e16] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e17] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e18]:
+      - banner [ref=e19]:
+        - generic [ref=e20]: /inv/reports
+        - generic [ref=e21]:
+          - generic [ref=e22]: 超级管理员
+          - button "退出" [ref=e23] [cursor=pointer]
+      - main [ref=e24]:
+        - heading "报表分析" [level=1] [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 起始日期
+            - textbox [ref=e30]: 2026-04-04
+          - generic [ref=e31]:
+            - generic [ref=e32]: 结束日期
+            - textbox [ref=e33]: 2026-05-04
+          - generic [ref=e34]:
+            - generic [ref=e35]: 仓库
+            - combobox [ref=e36]:
+              - option "全部仓库" [selected]
+              - option "主仓库"
+          - button "刷新" [ref=e37] [cursor=pointer]
+        - generic [ref=e38]:
+          - heading "汇总指标" [level=2] [ref=e39]
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]: 商品总数
+              - generic [ref=e43]: "3"
+            - generic [ref=e44]:
+              - generic [ref=e45]: 活跃仓库数
+              - generic [ref=e46]: "1"
+            - generic [ref=e47]:
+              - generic [ref=e48]: 总现存量
+              - generic [ref=e49]: "100"
+            - generic [ref=e50]:
+              - generic [ref=e51]: 低库存预警
+              - generic [ref=e52]: "0"
+            - generic [ref=e53]:
+              - generic [ref=e54]: 入库单数
+              - generic [ref=e55]: "1"
+            - generic [ref=e56]:
+              - generic [ref=e57]: 出库单数
+              - generic [ref=e58]: "0"
+            - generic [ref=e59]:
+              - generic [ref=e60]: 调拨单数
+              - generic [ref=e61]: "0"
+            - generic [ref=e62]:
+              - generic [ref=e63]: 盘点单数
+              - generic [ref=e64]: "0"
+        - generic [ref=e65]:
+          - heading "每日出入库" [level=2] [ref=e66]
+          - table [ref=e68]:
+            - rowgroup [ref=e69]:
+              - row "日期 入库数量 出库数量" [ref=e70]:
+                - columnheader "日期" [ref=e71]
+                - columnheader "入库数量" [ref=e72]
+                - columnheader "出库数量" [ref=e73]
+            - rowgroup [ref=e74]:
+              - row "2026-04-03 0 0" [ref=e75]:
+                - cell "2026-04-03" [ref=e76]
+                - cell "0" [ref=e77]
+                - cell "0" [ref=e78]
+              - row "2026-04-04 0 0" [ref=e79]:
+                - cell "2026-04-04" [ref=e80]
+                - cell "0" [ref=e81]
+                - cell "0" [ref=e82]
+              - row "2026-04-05 0 0" [ref=e83]:
+                - cell "2026-04-05" [ref=e84]
+                - cell "0" [ref=e85]
+                - cell "0" [ref=e86]
+              - row "2026-04-06 0 0" [ref=e87]:
+                - cell "2026-04-06" [ref=e88]
+                - cell "0" [ref=e89]
+                - cell "0" [ref=e90]
+              - row "2026-04-07 0 0" [ref=e91]:
+                - cell "2026-04-07" [ref=e92]
+                - cell "0" [ref=e93]
+                - cell "0" [ref=e94]
+              - row "2026-04-08 0 0" [ref=e95]:
+                - cell "2026-04-08" [ref=e96]
+                - cell "0" [ref=e97]
+                - cell "0" [ref=e98]
+              - row "2026-04-09 0 0" [ref=e99]:
+                - cell "2026-04-09" [ref=e100]
+                - cell "0" [ref=e101]
+                - cell "0" [ref=e102]
+              - row "2026-04-10 0 0" [ref=e103]:
+                - cell "2026-04-10" [ref=e104]
+                - cell "0" [ref=e105]
+                - cell "0" [ref=e106]
+              - row "2026-04-11 0 0" [ref=e107]:
+                - cell "2026-04-11" [ref=e108]
+                - cell "0" [ref=e109]
+                - cell "0" [ref=e110]
+              - row "2026-04-12 0 0" [ref=e111]:
+                - cell "2026-04-12" [ref=e112]
+                - cell "0" [ref=e113]
+                - cell "0" [ref=e114]
+              - row "2026-04-13 0 0" [ref=e115]:
+                - cell "2026-04-13" [ref=e116]
+                - cell "0" [ref=e117]
+                - cell "0" [ref=e118]
+              - row "2026-04-14 0 0" [ref=e119]:
+                - cell "2026-04-14" [ref=e120]
+                - cell "0" [ref=e121]
+                - cell "0" [ref=e122]
+              - row "2026-04-15 0 0" [ref=e123]:
+                - cell "2026-04-15" [ref=e124]
+                - cell "0" [ref=e125]
+                - cell "0" [ref=e126]
+              - row "2026-04-16 0 0" [ref=e127]:
+                - cell "2026-04-16" [ref=e128]
+                - cell "0" [ref=e129]
+                - cell "0" [ref=e130]
+              - row "2026-04-17 0 0" [ref=e131]:
+                - cell "2026-04-17" [ref=e132]
+                - cell "0" [ref=e133]
+                - cell "0" [ref=e134]
+              - row "2026-04-18 0 0" [ref=e135]:
+                - cell "2026-04-18" [ref=e136]
+                - cell "0" [ref=e137]
+                - cell "0" [ref=e138]
+              - row "2026-04-19 0 0" [ref=e139]:
+                - cell "2026-04-19" [ref=e140]
+                - cell "0" [ref=e141]
+                - cell "0" [ref=e142]
+              - row "2026-04-20 0 0" [ref=e143]:
+                - cell "2026-04-20" [ref=e144]
+                - cell "0" [ref=e145]
+                - cell "0" [ref=e146]
+              - row "2026-04-21 0 0" [ref=e147]:
+                - cell "2026-04-21" [ref=e148]
+                - cell "0" [ref=e149]
+                - cell "0" [ref=e150]
+              - row "2026-04-22 0 0" [ref=e151]:
+                - cell "2026-04-22" [ref=e152]
+                - cell "0" [ref=e153]
+                - cell "0" [ref=e154]
+              - row "2026-04-23 0 0" [ref=e155]:
+                - cell "2026-04-23" [ref=e156]
+                - cell "0" [ref=e157]
+                - cell "0" [ref=e158]
+              - row "2026-04-24 0 0" [ref=e159]:
+                - cell "2026-04-24" [ref=e160]
+                - cell "0" [ref=e161]
+                - cell "0" [ref=e162]
+              - row "2026-04-25 0 0" [ref=e163]:
+                - cell "2026-04-25" [ref=e164]
+                - cell "0" [ref=e165]
+                - cell "0" [ref=e166]
+              - row "2026-04-26 0 0" [ref=e167]:
+                - cell "2026-04-26" [ref=e168]
+                - cell "0" [ref=e169]
+                - cell "0" [ref=e170]
+              - row "2026-04-27 0 0" [ref=e171]:
+                - cell "2026-04-27" [ref=e172]
+                - cell "0" [ref=e173]
+                - cell "0" [ref=e174]
+              - row "2026-04-28 0 0" [ref=e175]:
+                - cell "2026-04-28" [ref=e176]
+                - cell "0" [ref=e177]
+                - cell "0" [ref=e178]
+              - row "2026-04-29 0 0" [ref=e179]:
+                - cell "2026-04-29" [ref=e180]
+                - cell "0" [ref=e181]
+                - cell "0" [ref=e182]
+              - row "2026-04-30 0 0" [ref=e183]:
+                - cell "2026-04-30" [ref=e184]
+                - cell "0" [ref=e185]
+                - cell "0" [ref=e186]
+              - row "2026-05-01 0 0" [ref=e187]:
+                - cell "2026-05-01" [ref=e188]
+                - cell "0" [ref=e189]
+                - cell "0" [ref=e190]
+              - row "2026-05-02 0 0" [ref=e191]:
+                - cell "2026-05-02" [ref=e192]
+                - cell "0" [ref=e193]
+                - cell "0" [ref=e194]
+              - row "2026-05-03 0 0" [ref=e195]:
+                - cell "2026-05-03" [ref=e196]
+                - cell "0" [ref=e197]
+                - cell "0" [ref=e198]
+              - row "2026-05-04 100 0" [ref=e199]:
+                - cell "2026-05-04" [ref=e200]
+                - cell "100" [ref=e201]
+                - cell "0" [ref=e202]
+        - generic [ref=e203]:
+          - generic [ref=e204]:
+            - heading "出入库 TOP 商品" [level=2] [ref=e205]
+            - combobox [ref=e206]:
+              - option "出 + 入" [selected]
+              - option "仅入库"
+              - option "仅出库"
+          - table [ref=e208]:
+            - rowgroup [ref=e209]:
+              - row "商品编码 商品名称 入库合计 出库合计 净变化" [ref=e210]:
+                - columnheader "商品编码" [ref=e211]
+                - columnheader "商品名称" [ref=e212]
+                - columnheader "入库合计" [ref=e213]
+                - columnheader "出库合计" [ref=e214]
+                - columnheader "净变化" [ref=e215]
+            - rowgroup [ref=e216]:
+              - row "CG-863228 CLI巡检商品-863228 100 0 100" [ref=e217]:
+                - cell "CG-863228" [ref=e218]
+                - cell "CLI巡检商品-863228" [ref=e219]
+                - cell "100" [ref=e220]
+                - cell "0" [ref=e221]
+                - cell "100" [ref=e222]
+        - generic [ref=e223]:
+          - generic [ref=e224]:
+            - heading "滞销商品" [level=2] [ref=e225]
+            - generic [ref=e226]:
+              - generic [ref=e227]: 滞销天数阈值
+              - spinbutton [ref=e228]: "90"
+          - table [ref=e230]:
+            - rowgroup [ref=e231]:
+              - row "商品编码 商品名称 现存量 最近出库时间 未出库天数" [ref=e232]:
+                - columnheader "商品编码" [ref=e233]
+                - columnheader "商品名称" [ref=e234]
+                - columnheader "现存量" [ref=e235]
+                - columnheader "最近出库时间" [ref=e236]
+                - columnheader "未出库天数" [ref=e237]
+            - rowgroup [ref=e238]:
+              - row "WG-862501308 WalkerGoods-862501308 0 从未出库 -" [ref=e239]:
+                - cell "WG-862501308" [ref=e240]
+                - cell "WalkerGoods-862501308" [ref=e241]
+                - cell "0" [ref=e242]
+                - cell "从未出库" [ref=e243]
+                - cell "-" [ref=e244]
+              - row "WG-862531107 WalkerGoods-862531107 0 从未出库 -" [ref=e245]:
+                - cell "WG-862531107" [ref=e246]
+                - cell "WalkerGoods-862531107" [ref=e247]
+                - cell "0" [ref=e248]
+                - cell "从未出库" [ref=e249]
+                - cell "-" [ref=e250]
+              - row "CG-863228 CLI巡检商品-863228 100 从未出库 -" [ref=e251]:
+                - cell "CG-863228" [ref=e252]
+                - cell "CLI巡检商品-863228" [ref=e253]
+                - cell "100" [ref=e254]
+                - cell "从未出库" [ref=e255]
+                - cell "-" [ref=e256]
+        - generic [ref=e257]:
+          - heading "各仓库库存" [level=2] [ref=e258]
+          - table [ref=e260]:
+            - rowgroup [ref=e261]:
+              - row "仓库编码 仓库名称 SKU 数 总数量 锁定量" [ref=e262]:
+                - columnheader "仓库编码" [ref=e263]
+                - columnheader "仓库名称" [ref=e264]
+                - columnheader "SKU 数" [ref=e265]
+                - columnheader "总数量" [ref=e266]
+                - columnheader "锁定量" [ref=e267]
+            - rowgroup [ref=e268]:
+              - row "WH-MAIN 主仓库 1 100 0" [ref=e269]:
+                - cell "WH-MAIN" [ref=e270]
+                - cell "主仓库" [ref=e271]
+                - cell "1" [ref=e272]
+                - cell "100" [ref=e273]
+                - cell "0" [ref=e274]
+  - alert [ref=e275]

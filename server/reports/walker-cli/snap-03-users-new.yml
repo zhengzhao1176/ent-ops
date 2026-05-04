@@ -1,0 +1,63 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e3]
+  - generic [ref=e137]:
+    - complementary [ref=e138]:
+      - generic [ref=e139]: 企业运营
+      - navigation [ref=e140]:
+        - link "仪表板" [ref=e141] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e142] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e143] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e144] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e145] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e146] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e147] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e148] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e149] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e150] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e151] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e152] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e153]:
+      - banner [ref=e154]:
+        - generic [ref=e155]: /admin/users/new
+        - generic [ref=e156]:
+          - generic [ref=e157]: 超级管理员
+          - button "退出" [ref=e158] [cursor=pointer]
+      - main [ref=e159]:
+        - heading "新建用户" [level=1] [ref=e160]
+        - generic [ref=e161]:
+          - generic [ref=e162]:
+            - generic [ref=e163]: 工号
+            - textbox [ref=e164]
+          - generic [ref=e165]:
+            - generic [ref=e166]: 用户名
+            - textbox [ref=e167]
+          - generic [ref=e168]:
+            - generic [ref=e169]: 姓名
+            - textbox [ref=e170]
+          - generic [ref=e171]:
+            - generic [ref=e172]: 手机号
+            - textbox [ref=e173]
+          - generic [ref=e174]:
+            - generic [ref=e175]: 邮箱
+            - textbox [ref=e176]
+          - generic [ref=e177]:
+            - generic [ref=e178]: 部门
+            - combobox [ref=e179]:
+              - option "请选择" [selected]
+              - option "总部"
+              - option "技术部"
+          - generic [ref=e180]:
+            - button "提交" [ref=e181] [cursor=pointer]
+            - button "取消" [ref=e182] [cursor=pointer]

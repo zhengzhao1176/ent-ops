@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e3]
+  - generic [ref=e14]:
+    - complementary [ref=e15]:
+      - generic [ref=e16]: 企业运营
+      - navigation [ref=e17]:
+        - link "仪表板" [ref=e18] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e19] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e20] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e21] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e22] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e23] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e24] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e25] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e26] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e27] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e28] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e29] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e30]:
+      - banner [ref=e31]:
+        - generic [ref=e32]: /
+        - generic [ref=e33]:
+          - generic [ref=e34]: 超级管理员
+          - button "退出" [ref=e35] [cursor=pointer]
+      - main [ref=e36]:
+        - heading "仪表板" [level=1] [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: 当前用户
+            - generic [ref=e41]: 超级管理员
+          - generic [ref=e42]:
+            - generic [ref=e43]: 角色
+            - generic [ref=e44]: 超级管理员
+          - generic [ref=e45]:
+            - generic [ref=e46]: 权限数
+            - generic [ref=e47]: "0"

@@ -1,0 +1,98 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]: 企业运营
+      - navigation [ref=e5]:
+        - link "仪表板" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e7] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e8] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e9] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e10] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e11] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e12] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e13] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e14] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e15] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e16] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e17] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e18]:
+      - banner [ref=e19]:
+        - generic [ref=e20]: /inv/transfer/new
+        - generic [ref=e21]:
+          - generic [ref=e22]: 超级管理员
+          - button "退出" [ref=e23] [cursor=pointer]
+      - main [ref=e24]:
+        - heading "新建调拨单" [level=1] [ref=e25]
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e29]: 调拨类型
+              - combobox [ref=e30]:
+                - option "内部调拨" [selected]
+                - option "退仓调拨"
+                - option "调整调拨"
+            - generic [ref=e32]:
+              - generic [ref=e33]: 源仓库
+              - combobox [ref=e34]:
+                - option "请选择" [selected]
+                - option "主仓库"
+            - generic [ref=e35]:
+              - generic [ref=e36]: 源库位
+              - combobox [disabled] [ref=e37]:
+                - option "请选择" [selected]
+            - generic [ref=e38]:
+              - generic [ref=e39]: 目标仓库
+              - combobox [ref=e40]:
+                - option "请选择" [selected]
+                - option "主仓库"
+            - generic [ref=e41]:
+              - generic [ref=e42]: 目标库位
+              - combobox [disabled] [ref=e43]:
+                - option "请选择" [selected]
+            - generic [ref=e44]:
+              - generic [ref=e45]: 原因
+              - textbox [ref=e46]
+            - generic [ref=e47]:
+              - generic [ref=e48]: 备注
+              - textbox [ref=e49]
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - heading "明细" [level=2] [ref=e52]
+              - button "新增明细行" [ref=e53] [cursor=pointer]
+            - table [ref=e54]:
+              - rowgroup [ref=e55]:
+                - row "商品 数量 批次号 操作" [ref=e56]:
+                  - columnheader "商品" [ref=e57]
+                  - columnheader "数量" [ref=e58]
+                  - columnheader "批次号" [ref=e59]
+                  - columnheader "操作" [ref=e60]
+              - rowgroup [ref=e61]:
+                - row "请选择 删除" [ref=e62]:
+                  - cell "请选择" [ref=e63]:
+                    - combobox [ref=e64]:
+                      - option "请选择" [selected]
+                      - option "CLI巡检商品-863228"
+                      - option "WalkerGoods-862531107"
+                      - option "WalkerGoods-862501308"
+                  - cell [ref=e65]:
+                    - textbox "如 100" [ref=e66]
+                  - cell [ref=e67]:
+                    - textbox [ref=e68]
+                  - cell "删除" [ref=e69]:
+                    - button "删除" [disabled] [ref=e70]
+          - generic [ref=e71]:
+            - button "提交" [ref=e72] [cursor=pointer]
+            - button "取消" [ref=e73] [cursor=pointer]
+  - alert [ref=e74]

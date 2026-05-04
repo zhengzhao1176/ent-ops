@@ -1,0 +1,158 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]: 企业运营
+      - navigation [ref=e5]:
+        - link "仪表板" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e7] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e8] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e9] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e10] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e11] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e12] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e13] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e14] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e15] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e16] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e17] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e18]:
+      - banner [ref=e19]:
+        - generic [ref=e20]: /admin/roles
+        - generic [ref=e21]:
+          - generic [ref=e22]: 超级管理员
+          - button "退出" [ref=e23] [cursor=pointer]
+      - main [ref=e24]:
+        - generic [ref=e25]:
+          - heading "角色管理" [level=1] [ref=e26]
+          - button "新建角色" [ref=e27] [cursor=pointer]
+        - generic [ref=e28]:
+          - textbox "搜索 编码/名称" [ref=e29]
+          - button "查询" [ref=e30] [cursor=pointer]
+        - table [ref=e32]:
+          - rowgroup [ref=e33]:
+            - row "编码 名称 描述 是否内置 创建时间 操作" [ref=e34]:
+              - columnheader "编码" [ref=e35]
+              - columnheader "名称" [ref=e36]
+              - columnheader "描述" [ref=e37]
+              - columnheader "是否内置" [ref=e38]
+              - columnheader "创建时间" [ref=e39]
+              - columnheader "操作" [ref=e40]
+          - rowgroup [ref=e41]:
+            - row "ROLE_CLI_4192 CLI验证角色4192 由 playwright-cli 创建 自定义 2026/5/4 11:09:53 编辑 分配权限 删除" [ref=e150]:
+              - cell "ROLE_CLI_4192" [ref=e151]
+              - cell "CLI验证角色4192" [ref=e152]
+              - cell "由 playwright-cli 创建" [ref=e153]
+              - cell "自定义" [ref=e154]:
+                - generic [ref=e155]: 自定义
+              - cell "2026/5/4 11:09:53" [ref=e156]
+              - cell "编辑 分配权限 删除" [ref=e157]:
+                - button "编辑" [ref=e158] [cursor=pointer]
+                - button "分配权限" [ref=e159] [cursor=pointer]
+                - button "删除" [ref=e160] [cursor=pointer]
+            - row "ROLE_USER 普通用户 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e42]:
+              - cell "ROLE_USER" [ref=e43]
+              - cell "普通用户" [ref=e44]
+              - cell [ref=e45]
+              - cell "内置" [ref=e46]:
+                - generic [ref=e47]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e48]
+              - cell "编辑 分配权限 删除" [ref=e49]:
+                - button "编辑" [ref=e50] [cursor=pointer]
+                - button "分配权限" [ref=e51] [cursor=pointer]
+                - button "删除" [disabled] [ref=e52]
+            - row "ROLE_AUDITOR 审计员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e53]:
+              - cell "ROLE_AUDITOR" [ref=e54]
+              - cell "审计员" [ref=e55]
+              - cell [ref=e56]
+              - cell "内置" [ref=e57]:
+                - generic [ref=e58]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e59]
+              - cell "编辑 分配权限 删除" [ref=e60]:
+                - button "编辑" [ref=e61] [cursor=pointer]
+                - button "分配权限" [ref=e62] [cursor=pointer]
+                - button "删除" [disabled] [ref=e63]
+            - row "ROLE_SALES 销售员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e64]:
+              - cell "ROLE_SALES" [ref=e65]
+              - cell "销售员" [ref=e66]
+              - cell [ref=e67]
+              - cell "内置" [ref=e68]:
+                - generic [ref=e69]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e70]
+              - cell "编辑 分配权限 删除" [ref=e71]:
+                - button "编辑" [ref=e72] [cursor=pointer]
+                - button "分配权限" [ref=e73] [cursor=pointer]
+                - button "删除" [disabled] [ref=e74]
+            - row "ROLE_PURCHASER 采购员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e75]:
+              - cell "ROLE_PURCHASER" [ref=e76]
+              - cell "采购员" [ref=e77]
+              - cell [ref=e78]
+              - cell "内置" [ref=e79]:
+                - generic [ref=e80]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e81]
+              - cell "编辑 分配权限 删除" [ref=e82]:
+                - button "编辑" [ref=e83] [cursor=pointer]
+                - button "分配权限" [ref=e84] [cursor=pointer]
+                - button "删除" [disabled] [ref=e85]
+            - row "ROLE_WAREHOUSE_OP 仓库管理员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e86]:
+              - cell "ROLE_WAREHOUSE_OP" [ref=e87]
+              - cell "仓库管理员" [ref=e88]
+              - cell [ref=e89]
+              - cell "内置" [ref=e90]:
+                - generic [ref=e91]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e92]
+              - cell "编辑 分配权限 删除" [ref=e93]:
+                - button "编辑" [ref=e94] [cursor=pointer]
+                - button "分配权限" [ref=e95] [cursor=pointer]
+                - button "删除" [disabled] [ref=e96]
+            - row "ROLE_WAREHOUSE_MGR 仓库主管 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e97]:
+              - cell "ROLE_WAREHOUSE_MGR" [ref=e98]
+              - cell "仓库主管" [ref=e99]
+              - cell [ref=e100]
+              - cell "内置" [ref=e101]:
+                - generic [ref=e102]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e103]
+              - cell "编辑 分配权限 删除" [ref=e104]:
+                - button "编辑" [ref=e105] [cursor=pointer]
+                - button "分配权限" [ref=e106] [cursor=pointer]
+                - button "删除" [disabled] [ref=e107]
+            - row "ROLE_SYS_ADMIN 系统管理员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e108]:
+              - cell "ROLE_SYS_ADMIN" [ref=e109]
+              - cell "系统管理员" [ref=e110]
+              - cell [ref=e111]
+              - cell "内置" [ref=e112]:
+                - generic [ref=e113]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e114]
+              - cell "编辑 分配权限 删除" [ref=e115]:
+                - button "编辑" [ref=e116] [cursor=pointer]
+                - button "分配权限" [ref=e117] [cursor=pointer]
+                - button "删除" [disabled] [ref=e118]
+            - row "ROLE_SUPER_ADMIN 超级管理员 内置 2026/5/4 10:29:17 编辑 分配权限 删除" [ref=e119]:
+              - cell "ROLE_SUPER_ADMIN" [ref=e120]
+              - cell "超级管理员" [ref=e121]
+              - cell [ref=e122]
+              - cell "内置" [ref=e123]:
+                - generic [ref=e124]: 内置
+              - cell "2026/5/4 10:29:17" [ref=e125]
+              - cell "编辑 分配权限 删除" [ref=e126]:
+                - button "编辑" [ref=e127] [cursor=pointer]
+                - button "分配权限" [ref=e128] [cursor=pointer]
+                - button "删除" [disabled] [ref=e129]
+        - generic [ref=e130]:
+          - generic [ref=e131]: 共 9 条
+          - generic [ref=e132]:
+            - button "上一页" [disabled] [ref=e133]
+            - generic [ref=e134]: 第 1 页
+            - button "下一页" [disabled] [ref=e135]
+  - alert [ref=e136]
