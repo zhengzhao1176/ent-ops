@@ -3,7 +3,7 @@ import { appRouter } from '@server/routers/_app';
 import { buildAppContextFromRequest, SESSION_COOKIE_NAME } from '@server/http-context';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 const handler = async (req: Request) => {
   const res = await fetchRequestHandler({

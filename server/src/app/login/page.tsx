@@ -20,15 +20,16 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ loginId, password }),
       });
-      const data = await r.json();
+      const data = (await r.json()) as { error?: string; message?: string; user?: { mustChangePassword: boolean } };
+      const msg = data.message ?? '';
       if (!r.ok) {
-        if (data.error === 'FORBIDDEN' && /LOCKED/.test(data.message)) setError('账号已锁定，请稍后再试');
-        else if (data.error === 'FORBIDDEN' && /DISABLED/.test(data.message)) setError('账号已禁用');
-        else if (data.error === 'FORBIDDEN' && /PENDING/.test(data.message)) setError('账号未激活');
-        else setError(r.status === 401 ? '账号或密码错误' : data.message ?? '登录失败');
+        if (data.error === 'FORBIDDEN' && /LOCKED/.test(msg)) setError('账号已锁定，请稍后再试');
+        else if (data.error === 'FORBIDDEN' && /DISABLED/.test(msg)) setError('账号已禁用');
+        else if (data.error === 'FORBIDDEN' && /PENDING/.test(msg)) setError('账号未激活');
+        else setError(r.status === 401 ? '账号或密码错误' : msg || '登录失败');
         return;
       }
-      if (data.user.mustChangePassword) {
+      if (data.user?.mustChangePassword) {
         router.push('/change-password');
       } else {
         router.push('/');

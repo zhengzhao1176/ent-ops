@@ -1,0 +1,21 @@
+name = "ent-ops"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+# D1 binding — accessible at env.DB inside Workers / Next.js route handlers
+# To create the actual D1 database (run on YOUR machine, requires CLOUDFLARE_API_TOKEN):
+#   wrangler d1 create ent-ops-db
+# Then paste the printed database_id below replacing the placeholder.
+[[d1_databases]]
+binding = "DB"
+database_name = "ent-ops-db"
+database_id = "00000000-0000-0000-0000-000000000000"  # ← replace after `wrangler d1 create`
+migrations_dir = "migrations"
+
+# Secrets (set with `wrangler secret put JWT_SECRET`):
+# - JWT_SECRET   (32+ chars, used to sign session tokens)
+# - SESSION_TTL_SECONDS  (optional, default 1800)
+
+[vars]
+NODE_ENV = "production"

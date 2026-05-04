@@ -1,8 +1,8 @@
 import type { Db } from './_base';
-import crypto from 'node:crypto';
+import { sha256Hex } from '@/lib/crypto';
 
 export const sessionRepo = {
-  create(db: Db, data: {
+  async create(db: Db, data: {
     id: string; userId: bigint; token: string; expiresAt: Date;
     ip?: string | null; userAgent?: string | null;
   }) {
@@ -10,7 +10,7 @@ export const sessionRepo = {
       data: {
         id: data.id,
         userId: data.userId,
-        tokenHash: crypto.createHash('sha256').update(data.token).digest('hex'),
+        tokenHash: await sha256Hex(data.token),
         expiresAt: data.expiresAt,
         ip: data.ip ?? null,
         userAgent: data.userAgent ?? null,

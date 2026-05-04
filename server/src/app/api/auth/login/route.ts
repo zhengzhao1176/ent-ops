@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import { authService } from '@server/services/auth.service';
 import { createContext } from '@server/context';
-import { SESSION_COOKIE_NAME } from '@server/http-context';
+import { SESSION_COOKIE_NAME, getPrismaForRequest } from '@server/http-context';
 import { LoginInput } from '@/contracts/user/auth.contract';
 
-export const runtime = 'nodejs';
+// 'edge' runtime for Cloudflare Workers compatibility (next-on-pages).
+// Locally with `next dev`/`next start`, edge runs in a Node-based simulator,
+// so existing dev/test workflows still work.
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +21,8 @@ export async function POST(req: Request) {
       req.headers.get('x-real-ip') ??
       undefined;
     const userAgent = req.headers.get('user-agent') ?? undefined;
-    const ctx = createContext({ ip, userAgent });
+    const prisma = await getPrismaForRequest();
+    const ctx = createContext({ ip, userAgent, prisma });
     const result = await authService.login(ctx, parsed.data);
     const res = NextResponse.json({
       ok: true,

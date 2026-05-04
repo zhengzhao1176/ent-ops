@@ -1,14 +1,14 @@
-import crypto from 'node:crypto';
 import { sessionRepo } from '../repositories/session.repo';
 import type { AppContext } from '../context';
+import { randomHex } from '@/lib/crypto';
 
 const SESSION_TTL_MS = 30 * 60 * 1000;
 
 export const sessionService = {
   async issue(ctx: AppContext, userId: bigint) {
-    const id = crypto.randomBytes(16).toString('hex');
-    const token = crypto.randomBytes(32).toString('hex');
-    const refreshToken = crypto.randomBytes(32).toString('hex');
+    const id = randomHex(16);
+    const token = randomHex(32);
+    const refreshToken = randomHex(32);
     const expiresAt = new Date(ctx.clock.now().getTime() + SESSION_TTL_MS);
     await sessionRepo.create(ctx.prisma, {
       id,
