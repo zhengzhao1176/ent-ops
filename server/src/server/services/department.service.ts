@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { runInTransaction } from '@/lib/tx';
 import type { AppContext } from '../context';
 import { deptRepo } from '../repositories/department.repo';
 import { auditService } from './audit.service';
@@ -64,7 +65,7 @@ export const departmentService = {
     const newDepth = newParent ? newParent.depth + 1 : 0;
     const descendants = await deptRepo.findDescendants(ctx.prisma, oldPath);
 
-    await ctx.prisma.$transaction(async (tx) => {
+    await runInTransaction(ctx.prisma, async (tx) => {
       await tx.department.update({
         where: { id: node.id },
         data: { parentId: input.newParentId ?? null, path: newPath, depth: newDepth, updatedBy: ctx.user?.id ?? null },

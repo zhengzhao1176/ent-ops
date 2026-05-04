@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { runInTransaction } from '@/lib/tx';
 import { TRPCError } from '@trpc/server';
 import type { AppContext } from '../context';
 import type { Db } from '../repositories/_base';
@@ -179,7 +180,7 @@ export const inboundService = {
       input.lines.map((l) => l.goodsId),
     );
 
-    const created = await ctx.prisma.$transaction(async (tx) => {
+    const created = await runInTransaction(ctx.prisma, async (tx) => {
       const docNo = await genInboundDocNo(tx as unknown as Db, input.operationAt);
       return inboundRepo.create(tx, {
         header: {
@@ -520,7 +521,7 @@ export const inboundService = {
     }
 
     const operatorId = ctx.user?.id ?? head.operatorId;
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       // Apply stock effects for each line.
       for (const line of head.lines) {
         await stockService.applyInboundEffect(tx as unknown as Db, {
@@ -591,7 +592,7 @@ export const inboundService = {
 
     if (fromState === STATUS_AUDITED) {
       // Red-rebound path
-      const updated = await ctx.prisma.$transaction(async (tx) => {
+      const updated = await runInTransaction(ctx.prisma, async (tx) => {
         for (const line of head.lines) {
           await stockService.redReverseInboundByKey(tx as unknown as Db, {
             warehouseId: head.warehouseId,

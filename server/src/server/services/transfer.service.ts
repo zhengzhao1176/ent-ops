@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { runInTransaction } from '@/lib/tx';
 import { TRPCError } from '@trpc/server';
 import type { AppContext } from '../context';
 import type { Db } from '../repositories/_base';
@@ -234,7 +235,7 @@ export const transferService = {
       input.lines.map((l) => l.goodsId),
     );
 
-    const created = await ctx.prisma.$transaction(async (tx) => {
+    const created = await runInTransaction(ctx.prisma, async (tx) => {
       const docNo = await genTransferDocNo(tx as unknown as Db, input.operationAt);
       return transferRepo.create(tx, {
         header: {
@@ -627,7 +628,7 @@ export const transferService = {
     tryTransition(head.status, STATUS_AUDITED);
     const operatorId = ctx.user?.id ?? head.operatorId;
 
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       for (const line of head.lines) {
         // Locate source slot
         const fromSlot = await stockRepo.findOneByKey(tx as unknown as Db, {
@@ -732,7 +733,7 @@ export const transferService = {
     tryTransition(head.status, STATUS_RECEIVED);
     const operatorId = ctx.user?.id ?? head.operatorId;
 
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       for (const line of head.lines) {
         const shippedQty = line.shippedQty ?? line.qty;
         const actualReceived = line.receivedQty ?? shippedQty;

@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { runInTransaction } from '@/lib/tx';
 import type { AppContext } from '../context';
 import { userRepo } from '../repositories/user.repo';
 import { passwordHistoryRepo } from '../repositories/passwordHistory.repo';
@@ -113,7 +114,7 @@ export const authService = {
     }
 
     const newHash = await hashPassword(input.newPassword);
-    await ctx.prisma.$transaction(async (tx) => {
+    await runInTransaction(ctx.prisma, async (tx) => {
       await tx.user.update({
         where: { id: userId },
         data: {

@@ -1,0 +1,73 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e4]:
+      - generic [ref=e5]: 企业运营
+      - navigation [ref=e6]:
+        - link "仪表板" [ref=e7] [cursor=pointer]:
+          - /url: /
+        - link "用户管理" [ref=e8] [cursor=pointer]:
+          - /url: /admin/users
+        - link "角色管理" [ref=e9] [cursor=pointer]:
+          - /url: /admin/roles
+        - link "部门管理" [ref=e10] [cursor=pointer]:
+          - /url: /admin/depts
+        - link "审计日志" [ref=e11] [cursor=pointer]:
+          - /url: /admin/audit
+        - link "商品管理" [ref=e12] [cursor=pointer]:
+          - /url: /inv/goods
+        - link "库存查询" [ref=e13] [cursor=pointer]:
+          - /url: /inv/stock
+        - link "入库管理" [ref=e14] [cursor=pointer]:
+          - /url: /inv/inbound
+        - link "出库管理" [ref=e15] [cursor=pointer]:
+          - /url: /inv/outbound
+        - link "调拨管理" [ref=e16] [cursor=pointer]:
+          - /url: /inv/transfer
+        - link "库存盘点" [ref=e17] [cursor=pointer]:
+          - /url: /inv/stocktake
+        - link "报表分析" [ref=e18] [cursor=pointer]:
+          - /url: /inv/reports
+    - generic [ref=e19]:
+      - banner [ref=e20]:
+        - generic [ref=e21]: /inv/goods/new
+        - generic [ref=e22]:
+          - generic [ref=e23]: 超级管理员
+          - button "退出" [ref=e24] [cursor=pointer]
+      - main [ref=e25]:
+        - heading "新建商品" [level=1] [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 编码
+            - textbox [ref=e30]: PROD-G-67769
+          - generic [ref=e31]:
+            - generic [ref=e32]: 名称
+            - textbox [active] [ref=e33]: 生产巡检商品-67769
+          - generic [ref=e34]:
+            - generic [ref=e35]: 分类
+            - combobox [ref=e36]:
+              - option "请选择"
+              - option "默认分类" [selected]
+          - generic [ref=e37]:
+            - generic [ref=e38]: 单位
+            - combobox [ref=e39]:
+              - option "请选择"
+              - option "个" [selected]
+          - generic [ref=e40]:
+            - generic [ref=e41]: 规格
+            - textbox [ref=e42]
+          - generic [ref=e43]:
+            - generic [ref=e44]: 品牌
+            - textbox [ref=e45]
+          - generic [ref=e46]:
+            - generic [ref=e47]: 条码
+            - textbox [ref=e48]
+          - generic [ref=e49]:
+            - generic [ref=e50]: 安全库存
+            - textbox "如 10 或 10.5000" [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]: 库存上限
+            - textbox "如 1000" [ref=e54]
+          - generic [ref=e55]:
+            - button "提交" [ref=e56] [cursor=pointer]
+            - button "取消" [ref=e57] [cursor=pointer]
+  - alert [ref=e3]

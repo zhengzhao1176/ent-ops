@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { runInTransaction } from '@/lib/tx';
 import { TRPCError } from '@trpc/server';
 import type { AppContext } from '../context';
 import type { Db } from '../repositories/_base';
@@ -139,7 +140,7 @@ export const stocktakeService = {
       });
     }
 
-    const created = await ctx.prisma.$transaction(async (tx) => {
+    const created = await runInTransaction(ctx.prisma, async (tx) => {
       const docNo = await genStocktakeDocNo(tx as unknown as Db, input.operationAt);
       return stocktakeRepo.create(tx, {
         header: {
@@ -527,7 +528,7 @@ export const stocktakeService = {
     tryTransition(head.status, STATUS_FROZEN);
     const operatorId = ctx.user?.id ?? head.operatorId;
 
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       // Determine which existing (location, goods, batch) combinations are
       // already present (for SAMPLING / DYNAMIC) so we don't snapshot a
       // duplicate over a manual entry.
@@ -726,7 +727,7 @@ export const stocktakeService = {
     }
 
     // Persist gain/loss doc nos and flip status to 30.
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       if (gainDocNo !== null || lossDocNo !== null) {
         await stocktakeRepo.updateGainLossDocNos(tx as unknown as Db, id, {
           gainDocNo: gainDocNo ?? undefined,

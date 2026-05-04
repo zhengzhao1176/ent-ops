@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { runInTransaction } from '@/lib/tx';
 import { TRPCError } from '@trpc/server';
 import type { AppContext } from '../context';
 import { userRepo } from '../repositories/user.repo';
@@ -45,7 +46,7 @@ export const userService = {
     const initialPassword = input.initialPassword ?? generateInitialPassword();
     const passwordHash = await hashPassword(initialPassword);
 
-    const user = await ctx.prisma.$transaction(async (tx) => {
+    const user = await runInTransaction(ctx.prisma, async (tx) => {
       const u = await tx.user.create({
         data: {
           employeeNo: input.employeeNo,
@@ -206,7 +207,7 @@ export const userService = {
     if (!u) throw new TRPCError({ code: 'NOT_FOUND', message: '用户不存在' });
     const initialPassword = generateInitialPassword();
     const passwordHash = await hashPassword(initialPassword);
-    await ctx.prisma.$transaction(async (tx) => {
+    await runInTransaction(ctx.prisma, async (tx) => {
       await tx.user.update({
         where: { id: userId },
         data: {
@@ -240,7 +241,7 @@ export const userService = {
         throw new TRPCError({ code: 'FORBIDDEN', message: 'AT_LEAST_ONE_SUPER_ADMIN' });
       }
     }
-    await ctx.prisma.$transaction(async (tx) => {
+    await runInTransaction(ctx.prisma, async (tx) => {
       await tx.userRole.deleteMany({ where: { userId } });
       if (roleIds.length) {
         await tx.userRole.createMany({

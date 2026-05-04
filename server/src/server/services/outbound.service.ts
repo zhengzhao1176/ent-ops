@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { runInTransaction } from '@/lib/tx';
 import { TRPCError } from '@trpc/server';
 import type { AppContext } from '../context';
 import type { Db } from '../repositories/_base';
@@ -320,7 +321,7 @@ export const outboundService = {
       input.lines.map((l) => l.goodsId),
     );
 
-    const created = await ctx.prisma.$transaction(async (tx) => {
+    const created = await runInTransaction(ctx.prisma, async (tx) => {
       const docNo = await genOutboundDocNo(tx as unknown as Db, input.operationAt);
       return outboundRepo.create(tx, {
         header: {
@@ -704,7 +705,7 @@ export const outboundService = {
       | 'FEFO'
       | 'MANUAL';
 
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       for (const line of head.lines) {
         const allocations = await planLineAllocation(tx as unknown as Db, {
           warehouseId: head.warehouseId,
@@ -778,7 +779,7 @@ export const outboundService = {
       | 'FEFO'
       | 'MANUAL';
 
-    const updated = await ctx.prisma.$transaction(async (tx) => {
+    const updated = await runInTransaction(ctx.prisma, async (tx) => {
       for (const line of head.lines) {
         const allocations = await planLineAllocation(tx as unknown as Db, {
           warehouseId: head.warehouseId,
