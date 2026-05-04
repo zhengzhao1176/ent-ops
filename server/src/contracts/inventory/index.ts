@@ -9,3 +9,4 @@ export * as inbound from './inbound.contract';
 export * as outbound from './outbound.contract';
 export * as transfer from './transfer.contract';
 export * as stocktake from './stocktake.contract';
+export * as report from './report.contract';

@@ -17,5 +17,6 @@ export * as inventoryInbound from './inventory/inbound.contract';
 export * as inventoryOutbound from './inventory/outbound.contract';
 export * as inventoryTransfer from './inventory/transfer.contract';
 export * as inventoryStocktake from './inventory/stocktake.contract';
+export * as inventoryReport from './inventory/report.contract';
 
 export * as inventory from './inventory';

@@ -11,8 +11,10 @@ export default async function globalSetup() {
   if (!fs.existsSync(STATE_DIR)) fs.mkdirSync(STATE_DIR, { recursive: true });
 
   // Reset dev.db and seed
+  // Prisma SQLite resolves `file:./dev.db` relative to the schema.prisma directory,
+  // so the actual DB lives at ROOT/prisma/dev.db (not ROOT/dev.db).
   for (const f of ['dev.db', 'dev.db-journal']) {
-    const p = path.join(ROOT, f);
+    const p = path.join(ROOT, 'prisma', f);
     if (fs.existsSync(p)) fs.unlinkSync(p);
   }
   execSync('npx prisma migrate deploy', { cwd: ROOT, stdio: 'pipe' });
