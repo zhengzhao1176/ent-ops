@@ -2,9 +2,9 @@
 var define_ROUTES_default = { version: 1, description: "Built with @cloudflare/next-on-pages@1.13.10.", include: ["/*"], exclude: ["/_next/static/*"] };
 
 // node_modules/wrangler/templates/pages-dev-pipeline.ts
-import worker from "/Users/apple/Desktop/t5/server/.wrangler/tmp/pages-0Jfpl1/bundledWorker-0.3558443496754007.mjs";
+import worker from "/Users/apple/Desktop/t5/server/.wrangler/tmp/pages-0Jfpl1/bundledWorker-0.6313736687200165.mjs";
 import { isRoutingRuleMatch } from "/Users/apple/Desktop/t5/server/node_modules/wrangler/templates/pages-dev-util.ts";
-export * from "/Users/apple/Desktop/t5/server/.wrangler/tmp/pages-0Jfpl1/bundledWorker-0.3558443496754007.mjs";
+export * from "/Users/apple/Desktop/t5/server/.wrangler/tmp/pages-0Jfpl1/bundledWorker-0.6313736687200165.mjs";
 var routes = define_ROUTES_default;
 var pages_dev_pipeline_default = {
   fetch(request, env, context) {

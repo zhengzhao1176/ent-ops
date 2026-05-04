@@ -10,7 +10,7 @@ pages_build_output_dir = ".vercel/output/static"
 [[d1_databases]]
 binding = "DB"
 database_name = "ent-ops-db"
-database_id = "00000000-0000-0000-0000-000000000000"  # ← replace after `wrangler d1 create`
+database_id = "c3870b2a-a4a0-45af-a1e8-e607bb36fe06"
 migrations_dir = "migrations"
 
 # Secrets (set with `wrangler secret put JWT_SECRET`):
