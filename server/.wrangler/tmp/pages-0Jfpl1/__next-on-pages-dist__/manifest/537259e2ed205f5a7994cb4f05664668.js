@@ -1,1 +1,0 @@
-var _={},e=(s,A,E)=>(_.__NEXT_FONT_MANIFEST=s.__NEXT_FONT_MANIFEST='{"pages":{},"app":{},"appUsingSizeAdjust":false,"pagesUsingSizeAdjust":false}',_.__REACT_LOADABLE_MANIFEST=s.__REACT_LOADABLE_MANIFEST="{}",_);export{e as __getNamedExports};
